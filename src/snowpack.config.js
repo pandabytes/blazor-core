@@ -17,7 +17,6 @@ module.exports = {
     '**/node_modules/**/*',
     '**/bin/**/*',
     '**/obj/**/*',
-    '**/*.razor',
     '**/*.cs',
     '**/*.csproj',
     '**/package.json',
