@@ -13,6 +13,7 @@ interface DotNetObjectReference {
 }
 
 type CallbackInterop = {
+  assemblyName: string,
   isAsync: boolean,
   isCallBackInterop: boolean,
   dotNetRef: DotNetObjectReference,
@@ -24,9 +25,10 @@ function isCallbackInterop(obj: any): obj is CallbackInterop {
     return false;
   }
 
-  // These properties are defined in BaseCallbackInterop class and
+  // These properties are defined in C# BaseCallbackInterop class and
   // they're serialized to camel case by Blazor JSON serializer options
   const mustHaveProps = [
+    'isAsync',
     'isCallbackInterop',
     'assemblyName',
     'dotNetRef'

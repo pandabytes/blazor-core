@@ -1,3 +1,4 @@
+using System.Reflection;
 using Blazor.Interop.CallbackInterops;
 
 namespace Blazor.Interop;
@@ -5,21 +6,21 @@ namespace Blazor.Interop;
 /// <summary>
 /// Base class that represent a JS module.
 /// </summary>
-internal abstract class BaseJsModule : IAsyncDisposable
+public abstract class BaseJsModule : IAsyncDisposable
 {
   /// <summary>
   /// Name of this library so that
   /// derived classes knows where to
   /// load the JS files.
   /// </summary>
-  protected static readonly string LibraryName = 
-    typeof(BaseJsModule).Assembly.GetName().Name ??
+  protected string LibraryName =>
+    GetType().Assembly.GetName().Name ??
     throw new InvalidOperationException("Fail to get library name.");
 
   /// <summary>
   /// The prefix path to where the module is located.
   /// </summary>
-  protected static readonly string ModulePrefixPath = $"./_content/{LibraryName}/js";
+  protected string ModulePrefixPath => $"./_content/{LibraryName}";
 
   private IJSObjectReference? _module;
 

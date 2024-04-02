@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Components;
 namespace Blazor.Interop.CallbackInterops;
 
 /// <summary>
+/// This class represents an EventCallback callback for JS interop.
 /// Note when using this class, we copy 
 /// <see cref="EventCallback"/> because
 /// <see cref="EventCallback"/> is a struct.
 /// </summary>
-/// <typeparam name="T"></typeparam>
-internal sealed class EventCallbackInterop<T> : BaseCallbackInterop
+/// <typeparam name="T">Parameter type of the callback.</typeparam>
+public sealed class EventCallbackInterop<T> : BaseCallbackInterop
 {
   private class JSInteropFuncWrapper
   {
@@ -22,8 +23,12 @@ internal sealed class EventCallbackInterop<T> : BaseCallbackInterop
     public async Task Invoke(T arg) => await _callback.InvokeAsync(arg);
   }
 
+  /// <inheritdoc />
   public override bool IsAsync => true;
 
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
   public EventCallbackInterop(EventCallback<T> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
 }

@@ -1,21 +1,33 @@
 namespace Blazor.Interop.CallbackInterops;
 
 /// <summary>
-/// Taken from https://remibou.github.io/How-to-send-callback-to-JS-Interop-in-Blazor/
+/// Base class that represent a callback for JS interop.
+/// Borrow from https://remibou.github.io/How-to-send-callback-to-JS-Interop-in-Blazor/
 /// </summary>
-internal abstract class BaseCallbackInterop : IDisposable
+public abstract class BaseCallbackInterop : IDisposable
 {
   private bool _disposed;
 
-  // We have these properties to help JS know this is the CallbackInterop instance
   #pragma warning disable CA1822
 
+  /// <summary>
+  /// This is only used to help JS know this object is a CallbackInterop instance.
+  /// This property always returns true.
+  /// </summary>
   public bool IsCallbackInterop => true;
 
+  /// <summary>
+  /// This is only used to help JS know this object is a CallbackInterop instance.
+  /// This property always "Blazor.Interop".
+  /// </summary>
   public string AssemblyName => "Blazor.Interop";
 
   #pragma warning restore CA1822
 
+  /// <summary>
+  /// The dotnet object that contains a referene
+  /// to a C# callback.
+  /// </summary>
   // We don't want to expose private class JSInterop<T>Wrapper hence we return it as object
   public object? DotNetRef { get; protected set; }
 
@@ -27,12 +39,16 @@ internal abstract class BaseCallbackInterop : IDisposable
   /// </summary>
   public abstract bool IsAsync { get; }
 
+  /// <summary>
+  /// Constructor.
+  /// </summary>
   protected BaseCallbackInterop()
   {
     _disposed = false;
     DotNetRef = null;
   }
 
+  /// <inheritdoc />
   public void Dispose()
   {
     if (_disposed)

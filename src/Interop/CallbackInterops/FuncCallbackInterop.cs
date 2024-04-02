@@ -1,6 +1,10 @@
 namespace Blazor.Interop.CallbackInterops;
 
-internal class FuncCallbackInterop<TResult> : BaseCallbackInterop
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public class FuncCallbackInterop<TResult> : BaseCallbackInterop
 {
   private class JSInteropFuncWrapper
   {
@@ -12,6 +16,7 @@ internal class FuncCallbackInterop<TResult> : BaseCallbackInterop
     public TResult Invoke() => _callback.Invoke();
   }
 
+  /// <inheritdoc />
   public sealed override bool IsAsync
   {
     get
@@ -28,11 +33,19 @@ internal class FuncCallbackInterop<TResult> : BaseCallbackInterop
   /// </summary>
   protected FuncCallbackInterop() {}
 
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
   public FuncCallbackInterop(Func<TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
 }
 
-internal sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResult>
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="T">Type of the first parameter.</typeparam>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResult>
 {
   private class JSInteropFuncWrapper
   {
@@ -44,11 +57,20 @@ internal sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TRes
     public TResult Invoke(T arg) => _callback.Invoke(arg);
   }
 
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
   public FuncCallbackInterop(Func<T, TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
 }
 
-internal sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<TResult>
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="T1">Type of the first parameter.</typeparam>
+/// <typeparam name="T2">Type of the second parameter.</typeparam>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<TResult>
 {
   private class JSInteropFuncWrapper
   {
@@ -60,6 +82,9 @@ internal sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop
     public TResult Invoke(T1 arg1, T2 arg2) => _callback.Invoke(arg1, arg2);
   }
 
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
   public FuncCallbackInterop(Func<T1, T2, TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
 }
