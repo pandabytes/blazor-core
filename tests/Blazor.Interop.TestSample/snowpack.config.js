@@ -16,6 +16,7 @@ module.exports = {
   exclude: [
     '**/node_modules/**/*',
     '**/Properties/**/*',
+    '**/wwwroot/**/*',
     '**/bin/**/*',
     '**/obj/**/*',
     '**/*.cs',

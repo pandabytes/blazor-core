@@ -8,15 +8,12 @@ namespace Blazor.Interop;
 public sealed class DotnetCallbackJsModule : BaseJsModule
 {
   /// <inheritdoc/>
-  protected override string ModulePath { get; }
+  protected override string ModulePath => $"{ModulePrefixPath}/js/dotnet-callback.js";
 
   /// <summary>
   /// Constructor.
   /// </summary>
   /// <param name="jSRuntime">JS runtime.</param>
   public DotnetCallbackJsModule(IJSRuntime jSRuntime) : base(jSRuntime)
-  {
-    var pathToJsModule = $"{nameof(Interop)}/dotnet-callback.js";
-    ModulePath = $"{ModulePrefixPath}/js/{pathToJsModule}";
-  }
+  {}
 }

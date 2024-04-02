@@ -55,7 +55,7 @@ public abstract class BaseJsModule : IAsyncDisposable
         var moduleName = GetType().Name;
         var message = _disposed ? $"Module {moduleName} is already disposed." :
           $"Module at \"{ModulePath}\" is not loaded. " +
-          $"Please use the method {nameof(LoadModuleAsync)} to load the module.";
+          $"Please use the method {nameof(ImportModuleAsync)} to load the module.";
         throw new InvalidOperationException(message);
       }
 
@@ -81,16 +81,23 @@ public abstract class BaseJsModule : IAsyncDisposable
   }
 
   /// <summary>
-  /// Load the module defined at <see cref="ModulePath"/>
+  /// Import the module defined at <see cref="ModulePath"/>
   /// asynchronously.
   /// </summary>
   /// <remarks>
   /// This only needs to be called once. Calling this method
   /// more than once will do nothing.
   /// </remarks>
-  /// <returns>Empty task</returns>
-  public virtual async Task LoadModuleAsync()
-    => _module ??= await _jSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+  public virtual async Task ImportModuleAsync()
+  {
+    if (_disposed)
+    {
+      var moduleName = GetType().Name;
+      throw new InvalidOperationException($"Module {moduleName} is already disposed.");
+    }
+
+    _module ??= await _jSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+  }
 
   /// <inheritdoc/>
   public async ValueTask DisposeAsync()

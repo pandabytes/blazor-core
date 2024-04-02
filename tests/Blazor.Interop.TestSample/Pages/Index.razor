@@ -1,4 +1,25 @@
 ﻿@page "/"
 @inject FiltersJsModule FilterModule
 
-<h1>Hello, world!</h1>
+<h1>Keep even numbers only</h1>
+
+
+@code
+{
+  private readonly int[] _numbers = new int[]
+  {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+  };
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    await FilterModule.ImportModuleAsync();
+
+    var evenNumbers = await FilterModule.FilterNumberByAsync(_numbers, n => n % 2 == 0);
+    foreach (var number in evenNumbers)
+    {
+      Console.WriteLine(number);
+    }
+  }
+}
