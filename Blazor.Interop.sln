@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop", "src\Blazor.Interop.csproj", "{8FAAEBE8-4384-4211-AA43-B942434FAE28}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C92D32A2-E909-48ED-8D50-891FC202DF30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop.TestSample", "tests\Blazor.Interop.TestSample\Blazor.Interop.TestSample.csproj", "{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{8FAAEBE8-4384-4211-AA43-B942434FAE28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FAAEBE8-4384-4211-AA43-B942434FAE28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FAAEBE8-4384-4211-AA43-B942434FAE28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1} = {C92D32A2-E909-48ED-8D50-891FC202DF30}
 	EndGlobalSection
 EndGlobal
