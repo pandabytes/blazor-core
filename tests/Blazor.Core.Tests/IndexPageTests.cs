@@ -5,17 +5,13 @@ public class IndexPageTests
 {
   private const string AppUrl =  "http://localhost:5190/";
 
-  private readonly PlaywrightFixture _playwrightFixture;
+  private readonly PlaywrightFixture _playwrightFixture = null!;
 
-  /// <summary>
-  /// Setup test class injecting a playwrightFixture instance.
-  /// </summary>
-  /// <param name="playwrightFixture">The playwrightFixture
-  /// instance.</param>
-  public IndexPageTests(PlaywrightFixture playwrightFixture)
-  {
-    _playwrightFixture = playwrightFixture;
-  }
+  // This class is disabled to prevent installing PLaywright on CI environment
+  // public IndexPageTests(PlaywrightFixture playwrightFixture)
+  // {
+    // _playwrightFixture = playwrightFixture;
+  // }
 
   [InlineData(1)]
   [InlineData(5)]
