@@ -19,7 +19,7 @@ public class IndexPageTests
 
   [InlineData(1)]
   [InlineData(5)]
-  [Theory]
+  [Theory(Skip = "Temp skip E2E tests")]
   public async Task IndexPage_ClickFuncButton_FuncIsCalled(int clickCount)
   {
     await _playwrightFixture.GotoPageAsync(

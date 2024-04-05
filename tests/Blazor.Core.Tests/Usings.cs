@@ -4,3 +4,4 @@ global using FluentAssertions;
 
 global using Blazor.Core.TestSample;
 global using Blazor.Core.Tests.Fixtures;
+global using Blazor.Core.Interop;
