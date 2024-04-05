@@ -1,25 +1,58 @@
 ﻿@page "/"
-@inject FiltersJsModule FilterModule
+@inject DateFormatJsModule DateFormatJsModule
 
-<h1>Keep even numbers only</h1>
+<button data-testid=@TestIds.FuncTestId
+        @onclick=@OnFuncTriggerClicked>
+  Trigger Func callback
+</button>
+
+<ul>
+@foreach (var formattedDateTime in _formattedDateTimes)
+{
+  <li>@formattedDateTime</li>
+}
+</ul>
 
 
 @code
 {
-  private readonly int[] _numbers = new int[]
+  private readonly Func<DateTime, string> _funcSub = Substitute.For<Func<DateTime, string>>();
+
+  private readonly IList<string> _formattedDateTimes = new List<string>();
+
+  private async Task OnFuncTriggerClicked()
   {
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-  };
+    var dateFormatted = await DateFormatJsModule.FormatCurrentDateTimeAsync(_funcSub);
+
+    // Verify the func is called
+    _funcSub
+      .ReceivedWithAnyArgs()
+      .Invoke(default);
+
+    @* LogToConsole(TestIds.FuncTestId, dateFormatted); *@
+    _formattedDateTimes.Add(dateFormatted);
+  }
 
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
-    await FilterModule.ImportModuleAsync();
+    await DateFormatJsModule.ImportModuleAsync();
 
-    var evenNumbers = await FilterModule.FilterNumberByAsync(_numbers, n => n % 2 == 0);
-    foreach (var number in evenNumbers)
+    // This pretty much mocks the func object to be
+    // "(DateTime dt) => dt.ToUniversalTime().ToString()"
+    _funcSub
+      .Invoke(Arg.Any<DateTime>())
+      .Returns(args => ((DateTime)args[0]).ToUniversalTime().ToString());
+  }
+
+  private static void LogToConsole(string testId, string message)
+  {
+    message = message.Trim();
+    if (!message.EndsWith("."))
     {
-      Console.WriteLine(number);
+      message += ".";
     }
+
+    Console.WriteLine($"[{testId}] {message}");
   }
 }

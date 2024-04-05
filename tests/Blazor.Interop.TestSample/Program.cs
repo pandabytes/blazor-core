@@ -9,7 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
-  .AddSingleton<FiltersJsModule>()
+  .AddSingleton<DateFormatJsModule>()
   .AddSingleton<DotnetCallbackJsModule>()
   .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

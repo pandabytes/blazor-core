@@ -14,6 +14,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,18 +66,16 @@
   </PropertyGroup>
 
   <Target Name="RemoveWwwRootBeforeBuild" BeforeTargets="BeforeBuild">
-    <RemoveDir Directories="$(MSBuildProjectDirectory)/wwwroot/js"/>
+    <RemoveDir Directories="$(MSBuildProjectDirectory)/wwwroot/js" />
   </Target>
 
   <Target Name="NpmInstall" BeforeTargets="BeforeBuild" Inputs="$(NpmRoot)/package.json" Outputs="$(NpmInstallStampFile)">
-    <Exec WorkingDirectory="$(NpmRoot)"
-          Command="npm install" />
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
     <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
   </Target>
 
   <Target Name="RunSnowpackBuild" AfterTargets="PostBuildEvent">
-    <Exec WorkingDirectory="$(NpmRoot)"
-          Command="npm run snowpack-build" />
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run snowpack-build" />
   </Target>
 
 </Project>

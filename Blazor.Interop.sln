@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C92D32A2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop.TestSample", "tests\Blazor.Interop.TestSample\Blazor.Interop.TestSample.csproj", "{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop.Tests", "tests\Blazor.Interop.Tests\Blazor.Interop.Tests.csproj", "{0A925029-1CF9-45BE-9E4D-B1F173E33275}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,13 @@ Global
 		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A925029-1CF9-45BE-9E4D-B1F173E33275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A925029-1CF9-45BE-9E4D-B1F173E33275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A925029-1CF9-45BE-9E4D-B1F173E33275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A925029-1CF9-45BE-9E4D-B1F173E33275}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B7A1FE63-530B-4DC8-990F-CD49717DE6A1} = {C92D32A2-E909-48ED-8D50-891FC202DF30}
+		{0A925029-1CF9-45BE-9E4D-B1F173E33275} = {C92D32A2-E909-48ED-8D50-891FC202DF30}
 	EndGlobalSection
 EndGlobal
