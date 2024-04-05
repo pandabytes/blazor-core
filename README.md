@@ -1,5 +1,6 @@
-# Blazor Interop
+# Blazor Core
 
+# Blazor.Interop
 This library provides a base class that consumers can use to
 implement their own JS modules (`BaseJsModule`).
 
@@ -10,7 +11,7 @@ can invoke the C# callback. To use this functionality you must
 have a reference to a `DotnetCallbackJsModule` object and then
 call its `ImportAsync()` to import the `dotnet-callback.js` module.
 
-# Example
+## Example
 Your custom module may look like this.
 
 In your `math.ts`:
