@@ -8,7 +8,7 @@ serializes/deserializeC# callbacks (`Func`, `Action`, etc.) to JS.
 This allows C# code to pass let's say a `Func<>` to JS, and JS code
 can invoke the C# callback. To use this functionality you must
 have a reference to a `DotnetCallbackJsModule` object and then
-call its `ImportModuleAsync()` to import the `dotnet-callback.js` module.
+call its `ImportAsync()` to import the `dotnet-callback.js` module.
 
 # Example
 Your custom module may look like this.
@@ -54,7 +54,7 @@ Then in your application code (most likely in Blazor), use the module like this:
 
     // You must first load the module otherwise
     // using it will cause exception
-    await MathModule.ImportModuleAsync();
+    await MathModule.ImportAsync();
 
     _sum = await MathModule.AddAsync(3, 2);
   }

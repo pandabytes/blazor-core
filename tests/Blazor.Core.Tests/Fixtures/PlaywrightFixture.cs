@@ -1,4 +1,4 @@
-namespace Blazor.Interop.Tests.Fixtures;
+namespace Blazor.Core.Tests.Fixtures;
 
 /// <summary>
 /// Browser types we can use in the PlaywrightFixture.

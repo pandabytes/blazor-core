@@ -1,4 +1,4 @@
-namespace Blazor.Interop.TestSample;
+namespace Blazor.Core.TestSample;
 
 public static class TestIds
 {

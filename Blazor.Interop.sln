@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop", "src\Blazor.Interop.csproj", "{8FAAEBE8-4384-4211-AA43-B942434FAE28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Core", "src\Blazor.Core.csproj", "{8FAAEBE8-4384-4211-AA43-B942434FAE28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C92D32A2-E909-48ED-8D50-891FC202DF30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop.TestSample", "tests\Blazor.Interop.TestSample\Blazor.Interop.TestSample.csproj", "{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Core.TestSample", "tests\Blazor.Core.TestSample\Blazor.Core.TestSample.csproj", "{B7A1FE63-530B-4DC8-990F-CD49717DE6A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Interop.Tests", "tests\Blazor.Interop.Tests\Blazor.Interop.Tests.csproj", "{0A925029-1CF9-45BE-9E4D-B1F173E33275}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor.Core.Tests", "tests\Blazor.Core.Tests\Blazor.Core.Tests.csproj", "{0A925029-1CF9-45BE-9E4D-B1F173E33275}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

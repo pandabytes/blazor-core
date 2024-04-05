@@ -1,4 +1,4 @@
-namespace Blazor.Interop;
+namespace Blazor.Core.Interop;
 
 /// <summary>
 /// Encapsulate the `dotnet-callback.js` module.
@@ -8,7 +8,7 @@ namespace Blazor.Interop;
 public sealed class DotnetCallbackJsModule : BaseJsModule
 {
   /// <inheritdoc/>
-  protected override string ModulePath => $"{ModulePrefixPath}/js/dotnet-callback.js";
+  protected override string ModulePath => $"{ModulePrefixPath}/js/{nameof(Interop)}/dotnet-callback.js";
 
   /// <summary>
   /// Constructor.

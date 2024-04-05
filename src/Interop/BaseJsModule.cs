@@ -1,7 +1,6 @@
-using System.Reflection;
-using Blazor.Interop.CallbackInterops;
+using Blazor.Core.Interop.Callbacks;
 
-namespace Blazor.Interop;
+namespace Blazor.Core.Interop;
 
 /// <summary>
 /// Base class that represent a JS module.
@@ -55,7 +54,7 @@ public abstract class BaseJsModule : IAsyncDisposable
         var moduleName = GetType().Name;
         var message = _disposed ? $"Module {moduleName} is already disposed." :
           $"Module at \"{ModulePath}\" is not loaded. " +
-          $"Please use the method {nameof(ImportModuleAsync)} to load the module.";
+          $"Please use the method {nameof(ImportAsync)} to load the module.";
         throw new InvalidOperationException(message);
       }
 
@@ -88,7 +87,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// This only needs to be called once. Calling this method
   /// more than once will do nothing.
   /// </remarks>
-  public virtual async Task ImportModuleAsync()
+  public virtual async Task ImportAsync()
   {
     if (_disposed)
     {

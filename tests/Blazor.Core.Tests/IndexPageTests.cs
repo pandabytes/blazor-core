@@ -1,4 +1,4 @@
-namespace Blazor.Interop.Tests;
+namespace Blazor.Core.Tests;
 
 [Collection(PlaywrightCollectionDefinition.CollectionName)]
 public class IndexPageTests

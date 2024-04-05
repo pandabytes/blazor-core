@@ -1,4 +1,4 @@
-namespace Blazor.Interop.CallbackInterops;
+namespace Blazor.Core.Interop.Callbacks;
 
 /// <summary>
 /// Base class that represent an <see cref="Action"/> callback for JS interop.

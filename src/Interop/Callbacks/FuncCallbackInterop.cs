@@ -1,4 +1,4 @@
-namespace Blazor.Interop.CallbackInterops;
+namespace Blazor.Core.Interop.Callbacks;
 
 /// <summary>
 /// This class represents a Func callback for JS interop.

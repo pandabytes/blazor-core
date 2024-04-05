@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Blazor.Interop.CallbackInterops;
+namespace Blazor.Core.Interop.Callbacks;
 
 /// <summary>
 /// This class represents an EventCallback callback for JS interop.

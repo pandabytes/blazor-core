@@ -1,7 +1,8 @@
-using Blazor.Interop.CallbackInterops;
+using Blazor.Core.Interop;
+using Blazor.Core.Interop.Callbacks;
 using Microsoft.JSInterop;
 
-namespace Blazor.Interop.TestSample.Modules;
+namespace Blazor.Core.TestSample.Modules;
 
 public sealed class DateFormatJsModule : BaseJsModule
 {

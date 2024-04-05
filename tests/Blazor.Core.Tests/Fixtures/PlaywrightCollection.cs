@@ -1,4 +1,4 @@
-namespace Blazor.Interop.Tests.Fixtures;
+namespace Blazor.Core.Tests.Fixtures;
 
 /// <summary>
 /// PlaywrightCollection name that is used in the Collection

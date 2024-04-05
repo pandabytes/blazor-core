@@ -29,14 +29,13 @@
       .ReceivedWithAnyArgs()
       .Invoke(default);
 
-    @* LogToConsole(TestIds.FuncTestId, dateFormatted); *@
     _formattedDateTimes.Add(dateFormatted);
   }
 
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
-    await DateFormatJsModule.ImportModuleAsync();
+    await DateFormatJsModule.ImportAsync();
 
     // This pretty much mocks the func object to be
     // "(DateTime dt) => dt.ToUniversalTime().ToString()"

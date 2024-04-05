@@ -9,12 +9,12 @@
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageId>Blazor.Interop</PackageId>
+    <PackageId>Blazor.Core</PackageId>
     <Version>0.0.0</Version>
     <Authors>pandabytes</Authors>
-    <Description>Core Blazor library that provides base class to encapsulate JS modules.</Description>
+    <Description>Core Blazor library that provides base class for component and JS modules.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/pandabytes/blazor-interop</RepositoryUrl>
+    <RepositoryUrl>https://github.com/pandabytes/blazor-core</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>blazor,javascript interop,callback</PackageTags>
   </PropertyGroup>

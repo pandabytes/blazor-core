@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Blazor.Interop.csproj" />
+    <ProjectReference Include="..\..\src\Blazor.Core.csproj" />
   </ItemGroup>
 
   <!-- This custom task sets the current process's env var -->

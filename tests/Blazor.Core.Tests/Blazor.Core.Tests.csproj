@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Blazor.Interop.TestSample\Blazor.Interop.TestSample.csproj" />
+    <ProjectReference Include="..\Blazor.Core.TestSample\Blazor.Core.TestSample.csproj" />
   </ItemGroup>
 
 </Project>

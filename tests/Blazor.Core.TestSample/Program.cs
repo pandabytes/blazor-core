@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Blazor.Interop.TestSample;
-using Blazor.Interop.TestSample.Modules;
-using Blazor.Interop;
+using Blazor.Core.TestSample;
+using Blazor.Core.TestSample.Modules;
+using Blazor.Core.Interop;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,7 +16,7 @@ builder.Services
 var webHost = builder.Build();
 
 var dotnetCallbackModule = webHost.Services.GetRequiredService<DotnetCallbackJsModule>();
-await dotnetCallbackModule.ImportModuleAsync();
+await dotnetCallbackModule.ImportAsync();
 await dotnetCallbackModule.DisposeAsync();
 
 await webHost.RunAsync();
