@@ -90,7 +90,7 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
     await _testModule.DummyFunctionAsync();
   }
 
-  [Fact(Skip = "Test hangs")]
+  [Fact]
   public async Task BaseJsModule_CallMethodAfterDispose_ThrowsException()
   {
     // Arrange
