@@ -8,6 +8,8 @@
     "target": "ES2020",
     "module": "ES2020",
     "outDir": "wwwroot/js",
+    // This preserves the directory of the TS files
+    "rootDir": "./",
     "moduleResolution": "node",
   },
   "include": [

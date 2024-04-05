@@ -98,7 +98,7 @@
 
   <Target Name="RunSnowpackBuild" AfterTargets="PostBuildEvent">
     <Exec WorkingDirectory="$(NpmRoot)"
-          Command="npm run snowpack-build" />
+          Command="npm run rollup-build" />
   </Target>
 
 </Project>
