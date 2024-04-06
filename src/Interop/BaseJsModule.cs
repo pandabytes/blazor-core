@@ -101,17 +101,23 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <inheritdoc/>
   public async ValueTask DisposeAsync()
   {
-    // Component disposal can happen before/during component
-    // initialization according to:
-    // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-7.0#component-disposal-with-idisposable-and-iasyncdisposable
-    // Hence we must explicitly check for null here
+    await DisposeAsyncCore();
+    GC.SuppressFinalize(this);
+  }
+
+  /// <summary>
+  /// Common asynchronous cleanup operation
+  /// for subclasses to potentially override.
+  /// </summary>
+  protected virtual async ValueTask DisposeAsyncCore()
+  {
     if (_module is not null)
     {
       await _module.DisposeAsync();
-      GC.SuppressFinalize(this);
-      _disposed = true;
-      _module = null;
     }
+
+    _disposed = true;
+    _module = null;
 
     foreach (var callbackInterop in _callbackInterops)
     {
@@ -119,4 +125,5 @@ public abstract class BaseJsModule : IAsyncDisposable
     }
     _callbackInterops.Clear();
   }
+
 }

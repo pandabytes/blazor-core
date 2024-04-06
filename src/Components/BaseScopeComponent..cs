@@ -21,7 +21,7 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
 
   /// <summary>
   /// Specify a field whose type derives from <see cref="BaseJsModule"/>
-  /// and automatically load it during <see cref="OnInitializedAsync"/>.
+  /// and automatically import it during <see cref="OnAfterRenderAsync"/>.
   /// This attribute is only valid on fields marked with <see cref="InjectScopeAttribute"/>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
@@ -41,30 +41,40 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   }
 
   /// <inhereitdoc />
-  protected override async Task OnInitializedAsync()
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     await base.OnInitializedAsync();
 
-    // Find fields that are marked with AutoImportJsModule
-    // and their type must derive from BaseJsModule
-    var autoImportFields = GetInjectScopeServiceFields()
-      .Where(field => field.GetCustomAttribute<AutoImportJsModuleAttribute>() is not null)
-      .Where(field => typeof(BaseJsModule).IsAssignableFrom(field.FieldType));
-
-    foreach (var field in autoImportFields)
+    if (firstRender)
     {
-      var jsModule = (BaseJsModule)field.GetValue(this)!;
-      await jsModule.ImportAsync();
+      // Find fields that are marked with AutoImportJsModule
+      // and their type must derive from BaseJsModule
+      var autoImportFields = GetInjectScopeServiceFields()
+        .Where(field => field.GetCustomAttribute<AutoImportJsModuleAttribute>() is not null)
+        .Where(field => typeof(BaseJsModule).IsAssignableFrom(field.FieldType));
+
+      foreach (var field in autoImportFields)
+      {
+        var jsModule = (BaseJsModule)field.GetValue(this)!;
+        await jsModule.ImportAsync();
+      }
     }
   }
 
   /// <inhereitdoc />
-  async ValueTask IAsyncDisposable.DisposeAsync()
+  public async ValueTask DisposeAsync()
   {
-    // See https://github.com/dotnet/aspnetcore/issues/25873#issuecomment-884065550
-    await (ScopedServices as IAsyncDisposable)!.DisposeAsync();
+    await DisposeAsyncCore();
     GC.SuppressFinalize(this);
   }
+
+  /// <summary>
+  /// Common asynchronous cleanup operation
+  /// for subclasses to potentially override.
+  /// </summary>
+  protected virtual async ValueTask DisposeAsyncCore()
+    // See https://github.com/dotnet/aspnetcore/issues/25873#issuecomment-884065550
+    => await (ScopedServices as IAsyncDisposable)!.DisposeAsync();
 
   private IEnumerable<FieldInfo> GetInjectScopeServiceFields()
     => GetType()
