@@ -8,8 +8,30 @@ More importantly this library provides a TS module that
 serializes/deserializeC# callbacks (`Func`, `Action`, etc.) to JS.
 This allows C# code to pass let's say a `Func<>` to JS, and JS code
 can invoke the C# callback. To use this functionality you must
-have a reference to a `DotnetCallbackJsModule` object and then
+have a reference to a `DotNetCallbackJsModule` object and then
 call its `ImportAsync()` to import the `dotnet-callback.js` module.
+Then call `RegisterAttachReviverAsync()`.
+
+Your code in `Program.cs` may look like this.
+```cs
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.Services
+  .AddSingleton<DotNetCallbackJsModule>()
+  .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+var webHost = builder.Build();
+
+// Only need to import and register once
+var dotnetCallbackModule = webHost.Services.GetRequiredService<DotNetCallbackJsModule>();
+await dotnetCallbackModule.ImportAsync();
+await dotnetCallbackModule.RegisterAttachReviverAsync();
+await dotnetCallbackModule.DisposeAsync();
+
+await webHost.RunAsync();
+```
 
 ## Example
 Your custom module may look like this.
@@ -39,7 +61,8 @@ public sealed class MathJsModule : BaseJsModule
 }
 ```
 
-Then in your application code (most likely in Blazor), use the module like this:
+Then in your application code (most likely in Blazor), 
+add the module class to your DI container, and use the module like this:
 ```razor
 @inject MathJsModule MathModule
 
