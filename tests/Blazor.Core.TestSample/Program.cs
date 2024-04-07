@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazor.Core;
 using Blazor.Core.TestSample;
 using Blazor.Core.TestSample.Modules;
 using Blazor.Core.Interop;
@@ -15,9 +16,5 @@ builder.Services
 
 var webHost = builder.Build();
 
-var dotnetCallbackModule = webHost.Services.GetRequiredService<DotNetCallbackJsModule>();
-await dotnetCallbackModule.ImportAsync();
-await dotnetCallbackModule.RegisterAttachReviverAsync();
-await dotnetCallbackModule.DisposeAsync();
-
+await webHost.Services.RegisterAttachReviverAsync();
 await webHost.RunAsync();

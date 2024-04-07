@@ -33,6 +33,25 @@ await dotnetCallbackModule.DisposeAsync();
 await webHost.RunAsync();
 ```
 
+Alternatively you can just call the extension method `RegisterAttachReviverAsync` to do
+what's described above.
+```cs
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.Services
+  .AddSingleton<DotNetCallbackJsModule>()
+  .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+var webHost = builder.Build();
+
+// Only need to import and register once
+await webHost.Services.RegisterAttachReviverAsync();
+
+await webHost.RunAsync();
+```
+
 ## Example
 Your custom module may look like this.
 
