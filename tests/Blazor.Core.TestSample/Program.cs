@@ -10,13 +10,14 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
   .AddSingleton<DateFormatJsModule>()
-  .AddSingleton<DotnetCallbackJsModule>()
+  .AddSingleton<DotNetCallbackJsModule>()
   .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var webHost = builder.Build();
 
-var dotnetCallbackModule = webHost.Services.GetRequiredService<DotnetCallbackJsModule>();
+var dotnetCallbackModule = webHost.Services.GetRequiredService<DotNetCallbackJsModule>();
 await dotnetCallbackModule.ImportAsync();
+await dotnetCallbackModule.RegisterAttachReviverAsync();
 await dotnetCallbackModule.DisposeAsync();
 
 await webHost.RunAsync();

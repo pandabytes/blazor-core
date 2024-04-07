@@ -38,42 +38,58 @@ function isCallbackInterop(obj: any): obj is CallbackInterop {
   return haveAllProps && obj['assemblyName'] === 'Blazor.Interop';
 }
 
-/**
- * Taken from:
- *  - https://remibou.github.io/How-to-send-callback-to-JS-Interop-in-Blazor/
- *  - https://remibou.github.io/How-to-keep-js-object-reference-in-Blazor/
- * Essentially this converts any C# callback (Func, Action, & EventCallback) to
- * a JS function that can be invoked by JS code.
- *
- * According to the author in that article, DotNet can have multiple revivers so
- * if a reviver cannot handle a value it will be passed to the next reviver.
- * If this reviver can handle a value and potentially "transform" it (like what we do here),
- * then the "transformed" value will be passed to the next reviver until
- * there's no more revivers in the chain.
- *
- * Quote from the author:
- * This reviver will be called for every serialized object send to JS via JSInterop
- * (even deep in the object graph, so you can send arrays or complex objects with
- * JsRuntimeObjectRef properties).
- * 
- */
-DotNet.attachReviver((key, value) => {
-  if (isCallbackInterop(value)) {
-    const dotNetRef = value.dotNetRef;
+class DotNetReviverHandler {
+  private registered: boolean;
 
-    if (value.isAsync) {
-      // This callback will return a Promise
-      return function() {
-        return dotNetRef.invokeMethodAsync('Invoke', ...arguments);
-      };
-    }
-
-    return function() {
-      return dotNetRef.invokeMethod('Invoke', ...arguments);
-    }
+  constructor() {
+    this.registered = false;
   }
 
-  return value;
-});
+  public registerAttachReviver() {
+    if (this.registered) {
+      return;
+    }
 
-export {};
+    /**
+     * Taken from:
+     *  - https://remibou.github.io/How-to-send-callback-to-JS-Interop-in-Blazor/
+     *  - https://remibou.github.io/How-to-keep-js-object-reference-in-Blazor/
+     * Essentially this converts any C# callback (Func, Action, & EventCallback) to
+     * a JS function that can be invoked by JS code.
+     *
+     * According to the author in that article, DotNet can have multiple revivers so
+     * if a reviver cannot handle a value it will be passed to the next reviver.
+     * If this reviver can handle a value and potentially "transform" it (like what we do here),
+     * then the "transformed" value will be passed to the next reviver until
+     * there's no more revivers in the chain.
+     *
+     * Quote from the author:
+     * This reviver will be called for every serialized object send to JS via JSInterop
+     * (even deep in the object graph, so you can send arrays or complex objects with
+     * JsRuntimeObjectRef properties).
+     * 
+     */
+    DotNet.attachReviver((key, value) => {
+      if (isCallbackInterop(value)) {
+        const dotNetRef = value.dotNetRef;
+
+        if (value.isAsync) {
+          // This callback will return a Promise
+          return function() {
+            return dotNetRef.invokeMethodAsync('Invoke', ...arguments);
+          };
+        }
+
+        return function() {
+          return dotNetRef.invokeMethod('Invoke', ...arguments);
+        }
+      }
+
+      return value;
+    });
+
+    this.registered = true;
+  }
+}
+
+export const DotNetReviverHandlerObj = new DotNetReviverHandler();
