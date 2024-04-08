@@ -9,8 +9,9 @@
   "author": "pandabytes",
   "license": "MIT",
   "devDependencies": {
+    "@microsoft/dotnet-js-interop": "^7.0.14",
+    "@rollup/plugin-terser": "^0.4.4",
     "rollup": "^4.14.0",
-    "rollup-plugin-multi-input": "^1.4.1",
-    "@rollup/plugin-terser": "^0.4.4"
+    "rollup-plugin-multi-input": "^1.4.1"
   }
 }

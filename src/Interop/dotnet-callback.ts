@@ -1,22 +1,19 @@
-/**
- * See https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-dotnet-from-javascript?view=aspnetcore-7.0#create-javascript-object-and-data-references-to-pass-to-net
- */
-declare global {
-  const DotNet: {
-    attachReviver(callBack: (key: string, value: any) => Function | any): void;
-  }
-}
+// We import DotNet namespace like this just to get the type declaration
+// but we don't want to bundle it in our output .js file. Because the
+// namespace DotNet is already available in the browser when Blazor
+// loads the app
+// Idea taken from here https://stackoverflow.com/questions/74723484/how-to-get-vite-to-not-import-bundle-an-external-dependency/74723564
+import type { DotNet as NpmDotNet } from '@microsoft/dotnet-js-interop';
 
-interface DotNetObjectReference {
-  invokeMethod(methodName: string, ...args: any[]): any;
-  invokeMethodAsync(methodName: string, ...args: any[]): Promise<any>;
+declare global {
+  const DotNet: typeof NpmDotNet;
 }
 
 type CallbackInterop = {
   assemblyName: string,
   isAsync: boolean,
   isCallBackInterop: boolean,
-  dotNetRef: DotNetObjectReference,
+  dotNetRef: NpmDotNet.DotNetObject,
 }
 
 function isCallbackInterop(obj: any): obj is CallbackInterop {
