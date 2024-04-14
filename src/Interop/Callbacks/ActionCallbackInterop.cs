@@ -3,10 +3,38 @@ namespace Blazor.Core.Interop.Callbacks;
 /// <summary>
 /// Base class that represent an <see cref="Action"/> callback for JS interop.
 /// </summary>
-public abstract class ActionCallbackInterop : BaseCallbackInterop
+public class ActionCallbackInterop : BaseCallbackInterop
 {
+  private class JSInteropActionWrapper
+  {
+    private readonly Action _callback;
+
+    public JSInteropActionWrapper(Action callback) => _callback = callback;
+
+    [JSInvokable]
+    public void Invoke() => _callback.Invoke();
+  }
+
   /// <inheritdoc/>
   public sealed override bool IsAsync => false;
+
+  /// <summary>
+  /// For derived classes.
+  /// </summary>
+  protected ActionCallbackInterop() {}
+
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
+  public ActionCallbackInterop(Action callback)
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator ActionCallbackInterop(Action callback) => new(callback);
 }
 
 /// <summary>
@@ -32,6 +60,14 @@ public sealed class ActionCallbackInterop<T> : ActionCallbackInterop
   /// </summary>
   public ActionCallbackInterop(Action<T> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator ActionCallbackInterop<T>(Action<T> callback)
+    => new(callback);
 }
 
 /// <summary>
@@ -56,4 +92,12 @@ public sealed class ActionCallbackInterop<T1, T2> : ActionCallbackInterop
   /// </summary>
   public ActionCallbackInterop(Action<T1, T2> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator ActionCallbackInterop<T1, T2>(Action<T1, T2> callback)
+    => new(callback);
 }

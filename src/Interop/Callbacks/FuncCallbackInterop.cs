@@ -38,6 +38,14 @@ public class FuncCallbackInterop<TResult> : BaseCallbackInterop
   /// </summary>
   public FuncCallbackInterop(Func<TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<TResult>(Func<TResult> callback)
+    => new(callback);
 }
 
 /// <summary>
@@ -62,6 +70,14 @@ public sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResul
   /// </summary>
   public FuncCallbackInterop(Func<T, TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<T, TResult>(Func<T, TResult> callback)
+    => new(callback);
 }
 
 /// <summary>
@@ -87,4 +103,12 @@ public sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<T
   /// </summary>
   public FuncCallbackInterop(Func<T1, T2, TResult> callback)
     => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<T1, T2, TResult>(Func<T1, T2, TResult> callback)
+    => new(callback);
 }
