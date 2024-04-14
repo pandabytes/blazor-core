@@ -1,12 +1,63 @@
 # Blazor Core
 
-# Blazor.Interop
-This library provides a base class that consumers can use to
-implement their own JS modules (`BaseJsModule`).
+Install from [Nuget](https://www.nuget.org/packages/Blazor.Core).
+```
+dotnet add package Blazor.Core --version <latest-version>
+```
+
+# Components
+This library provides a base component class to easily inject scope services.
+Simply have your component inherit `BaseScopeComponent` class and mark your
+field(s) with `InjectScopeAttribute` attribute. Then during `BaseScopeComponent.OnInitialized`
+the scoped serivces will automatically be injected to these fiel(s).
+```razor
+@inherits BaseScopeComponent
+
+@code
+{
+  // This will be done automatically
+  [InjectScope]
+  private readonly MyScopeService _myScopeService = null!;
+
+  // If you do override OnInitialized() always make sure
+  // to call the base.Onitialized()
+  // protected override void OnInitialized()
+  // {
+  //   base.Onitialized();
+  // }
+}
+```
+
+Another attribute provided in this library is `AutoImportJsModule`.
+This attribute is used to automatically import scope module class derived from `BaseJsModule`.
+It provides a convinient way to call `BaseJsModule.ImportAsync()` implicitly, but it
+must be used with `InjectScope` attribute.
+```razor
+@inherits BaseScopeComponent
+
+@code
+{
+  // Inject and import automatically
+  [InjectScope, AutoImportJsModule]
+  private readonly MyScopeModule _myScopeModule = null!;
+
+  // If AutoImportJsModule is not provided,
+  // you would have to do it explicitly like below
+  // protected override async Task OnAfterRenderAsync()
+  // {
+  //   await base.OnAfterRenderAsync();
+  //   await _myScopeModule.ImportAsync();
+  // }
+}
+```
+
+# Interop
+This library provides a base class, `BaseJsModule`, that consumers can use to
+implement their own JS modules.
 
 ## Callback Interop
-More importantly this library provides a TS module that
-serializes/deserializeC# callbacks (`Func`, `Action`, etc.) to JS.
+More importantly this library provides a TypeScript module that
+serializes/deserialize C# callbacks (`Func`, `Action`, etc.) to JS.
 This allows C# code to pass let's say a `Func<>` to JS, and JS code
 can invoke the C# callback. To use this functionality you must
 have a reference to a `DotNetCallbackJsModule` object and then
