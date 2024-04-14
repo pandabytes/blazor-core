@@ -5,11 +5,11 @@ namespace Blazor.Core.Interop.Callbacks;
 /// </summary>
 public class ActionCallbackInterop : BaseCallbackInterop
 {
-  private class JSInteropActionWrapper
+  private class JSInteropWrapper
   {
     private readonly Action _callback;
 
-    public JSInteropActionWrapper(Action callback) => _callback = callback;
+    public JSInteropWrapper(Action callback) => _callback = callback;
 
     [JSInvokable]
     public void Invoke() => _callback.Invoke();
@@ -27,7 +27,7 @@ public class ActionCallbackInterop : BaseCallbackInterop
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public ActionCallbackInterop(Action callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.
@@ -45,11 +45,11 @@ public class ActionCallbackInterop : BaseCallbackInterop
 /// </typeparam>
 public sealed class ActionCallbackInterop<T> : ActionCallbackInterop
 {
-  private class JSInteropActionWrapper
+  private class JSInteropWrapper
   {
     private readonly Action<T> _callback;
 
-    public JSInteropActionWrapper(Action<T> callback) => _callback = callback;
+    public JSInteropWrapper(Action<T> callback) => _callback = callback;
 
     [JSInvokable]
     public void Invoke(T arg) => _callback.Invoke(arg);
@@ -59,7 +59,7 @@ public sealed class ActionCallbackInterop<T> : ActionCallbackInterop
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public ActionCallbackInterop(Action<T> callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.
@@ -77,11 +77,11 @@ public sealed class ActionCallbackInterop<T> : ActionCallbackInterop
 /// <typeparam name="T2">Type of the second parameter.</typeparam>
 public sealed class ActionCallbackInterop<T1, T2> : ActionCallbackInterop
 {
-  private class JSInteropActionWrapper
+  private class JSInteropWrapper
   {
     private readonly Action<T1, T2> _callback;
 
-    public JSInteropActionWrapper(Action<T1, T2> callback) => _callback = callback;
+    public JSInteropWrapper(Action<T1, T2> callback) => _callback = callback;
 
     [JSInvokable]
     public void Invoke(T1 arg1, T2 arg2) => _callback.Invoke(arg1, arg2);
@@ -91,7 +91,7 @@ public sealed class ActionCallbackInterop<T1, T2> : ActionCallbackInterop
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public ActionCallbackInterop(Action<T1, T2> callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropActionWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.

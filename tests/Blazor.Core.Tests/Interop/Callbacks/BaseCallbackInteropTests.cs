@@ -17,6 +17,15 @@ public abstract class BaseCallbackInteropTests
 
     Assert.NotNull(callbackField);
     Assert.NotNull(jsInvokableAttrb);
-    Assert.Same(callback, callbackField.GetValue(value));
+
+    // Use equality comparision for value type like struct and primitive
+    if (callback.GetType().IsValueType)
+    {
+      Assert.Equal(callback, callbackField.GetValue(value));
+    }
+    else // If it's reference type then check its reference the same
+    {
+      Assert.Same(callback, callbackField.GetValue(value));
+    }
   }
 }

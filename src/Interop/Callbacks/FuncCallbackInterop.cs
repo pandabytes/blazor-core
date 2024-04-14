@@ -6,11 +6,11 @@ namespace Blazor.Core.Interop.Callbacks;
 /// <typeparam name="TResult">Return type of the Func callback.</typeparam>
 public class FuncCallbackInterop<TResult> : BaseCallbackInterop
 {
-  private class JSInteropFuncWrapper
+  private class JSInteropWrapper
   {
     private readonly Func<TResult> _callback;
 
-    public JSInteropFuncWrapper(Func<TResult> callback) => _callback = callback;
+    public JSInteropWrapper(Func<TResult> callback) => _callback = callback;
 
     [JSInvokable]
     public TResult Invoke() => _callback.Invoke();
@@ -37,7 +37,7 @@ public class FuncCallbackInterop<TResult> : BaseCallbackInterop
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public FuncCallbackInterop(Func<TResult> callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.
@@ -55,11 +55,11 @@ public class FuncCallbackInterop<TResult> : BaseCallbackInterop
 /// <typeparam name="TResult">Return type of the Func callback.</typeparam>
 public sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResult>
 {
-  private class JSInteropFuncWrapper
+  private class JSInteropWrapper
   {
     private readonly Func<T, TResult> _callback;
 
-    public JSInteropFuncWrapper(Func<T, TResult> callback) => _callback = callback;
+    public JSInteropWrapper(Func<T, TResult> callback) => _callback = callback;
 
     [JSInvokable]
     public TResult Invoke(T arg) => _callback.Invoke(arg);
@@ -69,7 +69,7 @@ public sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResul
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public FuncCallbackInterop(Func<T, TResult> callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.
@@ -88,11 +88,11 @@ public sealed class FuncCallbackInterop<T, TResult> : FuncCallbackInterop<TResul
 /// <typeparam name="TResult">Return type of the Func callback.</typeparam>
 public sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<TResult>
 {
-  private class JSInteropFuncWrapper
+  private class JSInteropWrapper
   {
     private readonly Func<T1, T2, TResult> _callback;
 
-    public JSInteropFuncWrapper(Func<T1, T2, TResult> callback) => _callback = callback;
+    public JSInteropWrapper(Func<T1, T2, TResult> callback) => _callback = callback;
 
     [JSInvokable]
     public TResult Invoke(T1 arg1, T2 arg2) => _callback.Invoke(arg1, arg2);
@@ -102,7 +102,7 @@ public sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<T
   /// Construct with the given <paramref name="callback"/>.
   /// </summary>
   public FuncCallbackInterop(Func<T1, T2, TResult> callback)
-    => DotNetRef = DotNetObjectReference.Create(new JSInteropFuncWrapper(callback));
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
 
   /// <summary>
   /// Easy way to convert to a callback interop object.
