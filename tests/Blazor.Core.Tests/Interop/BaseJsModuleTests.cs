@@ -31,14 +31,19 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
     _testModule = Services.GetRequiredService<TestJsModule>();
   }
 
-  public Task InitializeAsync() => Task.CompletedTask;
+  public Task InitializeAsync()
+  {
+    Assert.Equal(JsModuleStatus.NotImported, _testModule.ModuleStatus);
+    return Task.CompletedTask;
+  }
 
   public async Task DisposeAsync()
   {
     await _testModule.DisposeAsync();
+    Assert.Equal(JsModuleStatus.Disposed, _testModule.ModuleStatus);
   }
 
-  [InlineData(2)]
+  [InlineData(1)]
   [InlineData(5)]
   [Theory]
   public async Task BaseJsModule_ImportManyTimes_NoExceptionThrown(int importTimes)
@@ -46,10 +51,11 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
     for (int i = 0; i < importTimes; i++)
     {
       await _testModule.ImportAsync();
+      Assert.Equal(JsModuleStatus.Imported, _testModule.ModuleStatus);
     }
   }
 
-  [InlineData(2)]
+  [InlineData(1)]
   [InlineData(5)]
   [Theory]
   public async Task BaseJsModule_DisposeManyTimes_NoExceptionThrown(int disposeTimes)
@@ -57,6 +63,7 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
     for (int i = 0; i < disposeTimes; i++)
     {
       await _testModule.DisposeAsync();
+      Assert.Equal(JsModuleStatus.Disposed, _testModule.ModuleStatus);
     }
   }
 
@@ -71,20 +78,23 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
 
     // Assert
     await Assert.ThrowsAsync<InvalidOperationException>(_testModule.ImportAsync);
+    Assert.Equal(JsModuleStatus.Disposed, _testModule.ModuleStatus);
   }
 
   [Fact]
   public async Task BaseJsModule_CallMethodBeforeImport_ThrowsException()
   {
     await Assert.ThrowsAsync<InvalidOperationException>(_testModule.DummyFunctionAsync);
+    Assert.Equal(JsModuleStatus.NotImported, _testModule.ModuleStatus);
   }
 
-  [Fact(Skip = "Test hangs")]
+  [Fact]
   public async Task BaseJsModule_CallMethodAfterImport_NoExceptionThrown()
   {
     // Arrange
     await _testModule.ImportAsync();
-    _mockJsModule.SetupVoid(DummyMethodName);
+    Assert.Equal(JsModuleStatus.Imported, _testModule.ModuleStatus);
+    _mockJsModule.SetupVoid(DummyMethodName).SetVoidResult();
 
     // Act
     await _testModule.DummyFunctionAsync();
@@ -99,5 +109,6 @@ public class BaseJsModuleTests : TestContext, IAsyncLifetime
 
     // Act & Assert
     await Assert.ThrowsAsync<InvalidOperationException>(_testModule.DummyFunctionAsync);
+    Assert.Equal(JsModuleStatus.Disposed, _testModule.ModuleStatus);
   }
 }
