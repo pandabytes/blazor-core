@@ -6,8 +6,7 @@ namespace Blazor.Core.Tests.Fixtures;
 /// Like "[Collection(PlaywrightFixture.PlaywrightCollection)]"
 /// </summary>
 [CollectionDefinition(CollectionName)]
-public class PlaywrightCollectionDefinition
-  : ICollectionFixture<PlaywrightFixture>
+public class PlaywrightCollectionDefinition : ICollectionFixture<PlaywrightFixture>
 {
   // This class is just xUnit plumbing code to apply
   // [CollectionDefinition] and the ICollectionFixture<>

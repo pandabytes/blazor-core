@@ -1,17 +1,17 @@
 namespace Blazor.Core.Tests;
 
-[Collection(PlaywrightCollectionDefinition.CollectionName)]
+// This class is disabled to prevent installing PLaywright on CI environment
+// [Collection(PlaywrightCollectionDefinition.CollectionName)]
 public class IndexPageTests
 {
   private const string AppUrl =  "http://localhost:5190/";
 
   private readonly PlaywrightFixture _playwrightFixture = null!;
 
-  // This class is disabled to prevent installing PLaywright on CI environment
-  // public IndexPageTests(PlaywrightFixture playwrightFixture)
-  // {
-    // _playwrightFixture = playwrightFixture;
-  // }
+  public IndexPageTests(PlaywrightFixture playwrightFixture)
+  {
+    _playwrightFixture = playwrightFixture;
+  }
 
   [InlineData(1)]
   [InlineData(5)]
