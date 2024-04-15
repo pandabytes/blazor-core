@@ -23,8 +23,6 @@ public abstract class BaseJsModule : IAsyncDisposable
 
   private IJSObjectReference? _module;
 
-  private bool _disposed = false;
-
   /// <summary>
   /// The JS runtime used to run Javascript code.
   /// </summary>
@@ -41,6 +39,8 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <summary>
   /// The Javascript module that contains exported variables,
   /// classes, functions, etc...
+  /// <see cref="ImportAsync" /> must be called first before
+  /// this property can be accessed (get).
   /// </summary>
   /// <exception cref="InvalidOperationException">
   /// Thrown when the module is null (i.e. not loaded yet).
@@ -51,15 +51,17 @@ public abstract class BaseJsModule : IAsyncDisposable
     {
       if (_module is null)
       {
+        var disposed = ModuleStatus == JsModuleStatus.Disposed;
         var moduleName = GetType().Name;
-        var message = _disposed ? $"Module {moduleName} is already disposed." :
+        var message = disposed ? $"Module {moduleName} is already disposed." :
           $"Module at \"{ModulePath}\" is not loaded. " +
-          $"Please use the method {nameof(ImportAsync)} to load the module.";
+          $"Please use the method {nameof(ImportAsync)} to import the module first.";
         throw new InvalidOperationException(message);
       }
 
       return _module;
     }
+    set => _module = value;
   }
 
   /// <summary>
@@ -70,6 +72,11 @@ public abstract class BaseJsModule : IAsyncDisposable
   protected abstract string ModulePath { get; }
 
   /// <summary>
+  /// Indicate the status of the JS module.
+  /// </summary>
+  public virtual JsModuleStatus ModuleStatus { get; protected set; }
+
+  /// <summary>
   /// Constructor.
   /// </summary>
   /// <param name="jSRuntime">The JS runtime used to run Javascript code.</param>
@@ -77,6 +84,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   {
     _jSRuntime = jSRuntime;
     _callbackInterops = new List<BaseCallbackInterop>();
+    ModuleStatus = JsModuleStatus.NotImported;
   }
 
   /// <summary>
@@ -89,13 +97,14 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// </remarks>
   public virtual async Task ImportAsync()
   {
-    if (_disposed)
+    if (ModuleStatus == JsModuleStatus.Disposed)
     {
       var moduleName = GetType().Name;
       throw new InvalidOperationException($"Module {moduleName} is already disposed.");
     }
 
     _module ??= await _jSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+    ModuleStatus = JsModuleStatus.Imported;
   }
 
   /// <inheritdoc/>
@@ -116,8 +125,8 @@ public abstract class BaseJsModule : IAsyncDisposable
       await _module.DisposeAsync();
     }
 
-    _disposed = true;
     _module = null;
+    ModuleStatus = JsModuleStatus.Disposed;
 
     foreach (var callbackInterop in _callbackInterops)
     {
@@ -125,5 +134,4 @@ public abstract class BaseJsModule : IAsyncDisposable
     }
     _callbackInterops.Clear();
   }
-
 }
