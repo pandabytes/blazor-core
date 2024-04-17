@@ -48,7 +48,7 @@ public class BaseScopeComponentTests : TestContext
     JSInterop.SetupModule("foo.js");
 
     // Act
-    RenderComponent<BaseScopeComponentWithJsModule>();
+    RenderComponent<BaseScopeComponentWithAutoImport>();
 
     // Assert
     Assert.NotNull(jsModule);
@@ -56,5 +56,47 @@ public class BaseScopeComponentTests : TestContext
     
     DisposeComponents();
     Assert.Equal(JsModuleStatus.Disposed, jsModule.ModuleStatus);
+  }
+
+  [Fact]
+  public void BaseScopeComponent_NotUseAutoImport_JsModuleIsNotImported()
+  {
+    // Arrange
+    JsModule? jsModule = null;
+    Services.AddScoped(sp =>
+    {
+      var jsRuntime = sp.GetRequiredService<IJSRuntime>();
+      jsModule = new JsModule(jsRuntime);
+      return jsModule;
+    });
+
+    JSInterop.SetupModule("foo.js");
+
+    // Act
+    RenderComponent<BaseScopeComponentWithJsModule>();
+
+    // Assert
+    Assert.NotNull(jsModule);
+    Assert.Equal(JsModuleStatus.NotImported, jsModule.ModuleStatus);
+    
+    DisposeComponents();
+    Assert.Equal(JsModuleStatus.Disposed, jsModule.ModuleStatus);
+  }
+
+  [Fact]
+  public void BaseScopeComponent_AutoImportFieldNotSet_ThrowsException()
+  {
+    // Arrange
+    Services.AddScoped(sp =>
+    {
+      var jsRuntime = sp.GetRequiredService<IJSRuntime>();
+      return new JsModule(jsRuntime);
+    });
+
+    JSInterop.SetupModule("foo.js");
+
+    // Act & Assert
+    Assert.Throws<InvalidOperationException>(()
+      => RenderComponent<BaseScopeComponentWithJsModuleNotInject>());
   }
 }
