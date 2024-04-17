@@ -7,9 +7,11 @@ namespace Blazor.Core.Interop;
 /// </summary>
 public abstract class BaseJsModule : IAsyncDisposable
 {
+  private IJSObjectReference? _module;
+
   /// <summary>
   /// Name of this library so that
-  /// derived classes knows where to
+  /// derived classes know where to
   /// load the JS files.
   /// </summary>
   protected string LibraryName =>
@@ -21,31 +23,29 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// </summary>
   protected string ModulePrefixPath => $"./_content/{LibraryName}";
 
-  private IJSObjectReference? _module;
-
   /// <summary>
   /// The JS runtime used to run Javascript code.
   /// </summary>
-  protected readonly IJSRuntime _jSRuntime;
+  protected IJSRuntime JSRuntime { get; private set; }
 
   /// <summary>
   /// Some JS functions accept callbacks and since
   /// the implementation of callback for JS interop
-  /// is IDispose, we need to keep track of these
-  /// callback objects so that we dispose them.
+  /// uses IDispose, we need to keep track of these
+  /// callback objects so that we dispose them later.
   /// </summary>
-  protected readonly IList<BaseCallbackInterop> _callbackInterops;
+  protected IList<BaseCallbackInterop> CallbackInterops { get; private set; }
 
   /// <summary>
   /// The Javascript module that contains exported variables,
   /// classes, functions, etc...
   /// <see cref="ImportAsync" /> must be called first before
-  /// this property can be accessed (get).
+  /// this property can be accessed.
   /// </summary>
   /// <exception cref="InvalidOperationException">
   /// Thrown when the module is null (i.e. not loaded yet).
   /// </exception>
-  protected virtual IJSObjectReference Module
+  protected IJSObjectReference Module
   {
     get
     {
@@ -61,7 +61,7 @@ public abstract class BaseJsModule : IAsyncDisposable
 
       return _module;
     }
-    set => _module = value;
+    private set => _module = value;
   }
 
   /// <summary>
@@ -74,7 +74,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <summary>
   /// Indicate the status of the JS module.
   /// </summary>
-  public virtual JsModuleStatus ModuleStatus { get; protected set; }
+  public JsModuleStatus ModuleStatus { get; private set; }
 
   /// <summary>
   /// Constructor.
@@ -82,8 +82,8 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <param name="jSRuntime">The JS runtime used to run Javascript code.</param>
   protected BaseJsModule(IJSRuntime jSRuntime)
   {
-    _jSRuntime = jSRuntime;
-    _callbackInterops = new List<BaseCallbackInterop>();
+    JSRuntime = jSRuntime;
+    CallbackInterops = new List<BaseCallbackInterop>();
     ModuleStatus = JsModuleStatus.NotImported;
   }
 
@@ -95,7 +95,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// This only needs to be called once. Calling this method
   /// more than once will do nothing.
   /// </remarks>
-  public virtual async Task ImportAsync()
+  public async Task ImportAsync()
   {
     if (ModuleStatus == JsModuleStatus.Disposed)
     {
@@ -103,7 +103,7 @@ public abstract class BaseJsModule : IAsyncDisposable
       throw new InvalidOperationException($"Module {moduleName} is already disposed.");
     }
 
-    _module ??= await _jSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+    _module ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
     ModuleStatus = JsModuleStatus.Imported;
   }
 
@@ -128,10 +128,17 @@ public abstract class BaseJsModule : IAsyncDisposable
     _module = null;
     ModuleStatus = JsModuleStatus.Disposed;
 
-    foreach (var callbackInterop in _callbackInterops)
+    if (CallbackInterops is not null)
     {
-      callbackInterop.Dispose();
+      foreach (var callbackInterop in CallbackInterops)
+      {
+        callbackInterop.Dispose();
+      }
+      CallbackInterops.Clear();
     }
-    _callbackInterops.Clear();
+
+    // Set this to null so that we can release
+    // this reference for GC to collect
+    CallbackInterops = null!;
   }
 }

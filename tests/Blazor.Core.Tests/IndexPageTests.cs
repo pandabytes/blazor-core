@@ -8,10 +8,10 @@ public class IndexPageTests
 
   private readonly PlaywrightFixture _playwrightFixture = null!;
 
-  public IndexPageTests(PlaywrightFixture playwrightFixture)
-  {
-    _playwrightFixture = playwrightFixture;
-  }
+  // public IndexPageTests(PlaywrightFixture playwrightFixture)
+  // {
+  //   _playwrightFixture = playwrightFixture;
+  // }
 
   [InlineData(1)]
   [InlineData(5)]

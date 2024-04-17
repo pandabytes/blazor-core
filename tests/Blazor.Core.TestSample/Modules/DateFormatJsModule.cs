@@ -13,7 +13,7 @@ public sealed class DateFormatJsModule : BaseJsModule
   public async Task<string> FormatCurrentDateTimeAsync(Func<DateTime, string> formatter)
   {
     var callbackInterop = new FuncCallbackInterop<DateTime, string>(formatter);
-    _callbackInterops.Add(callbackInterop);
+    CallbackInterops.Add(callbackInterop);
     return await Module.InvokeAsync<string>("formatCurrentDateTime", callbackInterop);
   }
 }

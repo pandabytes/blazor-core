@@ -65,6 +65,7 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   public async ValueTask DisposeAsync()
   {
     await DisposeAsyncCore();
+    Dispose(false);
     GC.SuppressFinalize(this);
   }
 
