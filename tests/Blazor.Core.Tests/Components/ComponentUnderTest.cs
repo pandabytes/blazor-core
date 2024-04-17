@@ -10,9 +10,11 @@ public class JsModule : BaseJsModule
   {}
 }
 
+#pragma warning disable CS0414 // Remove unused private members  
+
 public class BaseScopeComponentUnderTest : BaseScopeComponent
 {
-#pragma warning disable CS0414 // Remove unused private members  
+
   [InjectScope]
   private readonly ScopeServiceDispose _scopeServiceDispose = null!;
 
@@ -21,13 +23,12 @@ public class BaseScopeComponentUnderTest : BaseScopeComponent
 
   [InjectScope]
   private readonly ScopeServiceDisposeAndDisposeAsync _scopeServiceDisposeAndDisposeAsync = null!;
-#pragma warning restore CS0414 // Remove unused private members
 }
 
 public class BaseScopeComponentWithJsModule : BaseScopeComponent
 {
-#pragma warning disable CS0414 // Remove unused private members  
   [InjectScope, AutoImportJsModule]
   private readonly JsModule _jsModule = null!;
-#pragma warning restore CS0414 // Remove unused private members
 }
+
+#pragma warning restore CS0414 // Remove unused private members

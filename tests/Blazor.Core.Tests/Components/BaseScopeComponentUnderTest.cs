@@ -4,11 +4,6 @@ namespace Blazor.Core.Tests.Components;
 
 public class BaseScopeComponentTests : TestContext
 {
-  // public BaseScopeComponentTests()
-  // {
-  //   Ser
-  // }
-
   [Fact]
   public void BaseScopeComponent_InjectScopeServices_ScopeServicesAreDisposed()
   {
