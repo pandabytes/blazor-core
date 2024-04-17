@@ -11,7 +11,7 @@ public abstract class BaseJsModule : IAsyncDisposable
 
   /// <summary>
   /// Name of this library so that
-  /// derived classes knows where to
+  /// derived classes know where to
   /// load the JS files.
   /// </summary>
   protected string LibraryName =>
@@ -31,8 +31,8 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <summary>
   /// Some JS functions accept callbacks and since
   /// the implementation of callback for JS interop
-  /// is IDispose, we need to keep track of these
-  /// callback objects so that we dispose them.
+  /// uses IDispose, we need to keep track of these
+  /// callback objects so that we dispose them later.
   /// </summary>
   protected IList<BaseCallbackInterop> CallbackInterops { get; private set; }
 
@@ -40,12 +40,12 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// The Javascript module that contains exported variables,
   /// classes, functions, etc...
   /// <see cref="ImportAsync" /> must be called first before
-  /// this property can be accessed (get).
+  /// this property can be accessed.
   /// </summary>
   /// <exception cref="InvalidOperationException">
   /// Thrown when the module is null (i.e. not loaded yet).
   /// </exception>
-  protected virtual IJSObjectReference Module
+  protected IJSObjectReference Module
   {
     get
     {
@@ -61,7 +61,7 @@ public abstract class BaseJsModule : IAsyncDisposable
 
       return _module;
     }
-    set => _module = value;
+    private set => _module = value;
   }
 
   /// <summary>
@@ -74,7 +74,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <summary>
   /// Indicate the status of the JS module.
   /// </summary>
-  public virtual JsModuleStatus ModuleStatus { get; protected set; }
+  public JsModuleStatus ModuleStatus { get; private set; }
 
   /// <summary>
   /// Constructor.
@@ -95,7 +95,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// This only needs to be called once. Calling this method
   /// more than once will do nothing.
   /// </remarks>
-  public virtual async Task ImportAsync()
+  public async Task ImportAsync()
   {
     if (ModuleStatus == JsModuleStatus.Disposed)
     {
