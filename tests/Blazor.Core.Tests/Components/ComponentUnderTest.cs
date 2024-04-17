@@ -27,7 +27,19 @@ public class BaseScopeComponentUnderTest : BaseScopeComponent
 
 public class BaseScopeComponentWithJsModule : BaseScopeComponent
 {
+  [InjectScope]
+  private readonly JsModule _jsModule = null!;
+}
+
+public class BaseScopeComponentWithAutoImport : BaseScopeComponent
+{
   [InjectScope, AutoImportJsModule]
+  private readonly JsModule _jsModuleAutoImport = null!;
+}
+
+public class BaseScopeComponentWithJsModuleNotInject : BaseScopeComponent
+{
+  [AutoImportJsModule]
   private readonly JsModule _jsModule = null!;
 }
 

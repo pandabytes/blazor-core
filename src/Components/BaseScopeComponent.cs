@@ -13,16 +13,15 @@ namespace Blazor.Core.Components;
 public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
 {
   /// <summary>
-  /// Specify a field to be automatically injected a scoped service
+  /// Specify a private field to be automatically injected a scoped service
   /// during <see cref="OnInitialized"/>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
   protected sealed class InjectScopeAttribute : Attribute {}
 
   /// <summary>
-  /// Specify a field whose type derives from <see cref="BaseJsModule"/>
+  /// Specify a private field whose type derives from <see cref="BaseJsModule"/>
   /// and automatically import it during <see cref="OnAfterRenderAsync"/>.
-  /// This attribute is only valid on fields marked with <see cref="InjectScopeAttribute"/>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
   protected sealed class AutoImportJsModuleAttribute : Attribute {}
@@ -43,19 +42,27 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   /// <inhereitdoc />
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    await base.OnInitializedAsync();
+    await base.OnAfterRenderAsync(firstRender);
 
     if (firstRender)
     {
       // Find fields that are marked with AutoImportJsModule
       // and their type must derive from BaseJsModule
-      var autoImportFields = GetInjectScopeServiceFields()
+      var type = GetType();
+      var autoImportFields = type
+        .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
         .Where(field => field.GetCustomAttribute<AutoImportJsModuleAttribute>() is not null)
         .Where(field => typeof(BaseJsModule).IsAssignableFrom(field.FieldType));
 
       foreach (var field in autoImportFields)
       {
-        var jsModule = (BaseJsModule)field.GetValue(this)!;
+        var jsModule = field.GetValue(this) as BaseJsModule;
+        if (jsModule is null)
+        {
+          var fieldName = $"{type.FullName}.{field.Name}";
+          throw new InvalidOperationException($"Field \"{fieldName}\" is null. " +
+                                               "Please inject a value to this field.");
+        }
         await jsModule.ImportAsync();
       }
     }
