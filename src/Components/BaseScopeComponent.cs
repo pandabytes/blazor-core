@@ -77,7 +77,7 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
     // See https://github.com/dotnet/aspnetcore/issues/25873#issuecomment-884065550
     => await (ScopedServices as IAsyncDisposable)!.DisposeAsync();
 
-    private IEnumerable<FieldInfo> GetInjectScopeServiceFields()
+  private IEnumerable<FieldInfo> GetInjectScopeServiceFields()
     => GetType()
          .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
          .Where(field => field.GetCustomAttribute<InjectScopeAttribute>() is not null);
