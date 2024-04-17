@@ -7,6 +7,8 @@ namespace Blazor.Core.Interop;
 /// </summary>
 public abstract class BaseJsModule : IAsyncDisposable
 {
+  private IJSObjectReference? _module;
+
   /// <summary>
   /// Name of this library so that
   /// derived classes knows where to
@@ -21,12 +23,10 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// </summary>
   protected string ModulePrefixPath => $"./_content/{LibraryName}";
 
-  private IJSObjectReference? _module;
-
   /// <summary>
   /// The JS runtime used to run Javascript code.
   /// </summary>
-  protected readonly IJSRuntime _jSRuntime;
+  protected IJSRuntime JSRuntime { get; private set; }
 
   /// <summary>
   /// Some JS functions accept callbacks and since
@@ -34,7 +34,7 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// is IDispose, we need to keep track of these
   /// callback objects so that we dispose them.
   /// </summary>
-  protected readonly IList<BaseCallbackInterop> _callbackInterops;
+  protected IList<BaseCallbackInterop> CallbackInterops { get; private set; }
 
   /// <summary>
   /// The Javascript module that contains exported variables,
@@ -82,8 +82,8 @@ public abstract class BaseJsModule : IAsyncDisposable
   /// <param name="jSRuntime">The JS runtime used to run Javascript code.</param>
   protected BaseJsModule(IJSRuntime jSRuntime)
   {
-    _jSRuntime = jSRuntime;
-    _callbackInterops = new List<BaseCallbackInterop>();
+    JSRuntime = jSRuntime;
+    CallbackInterops = new List<BaseCallbackInterop>();
     ModuleStatus = JsModuleStatus.NotImported;
   }
 
@@ -103,7 +103,7 @@ public abstract class BaseJsModule : IAsyncDisposable
       throw new InvalidOperationException($"Module {moduleName} is already disposed.");
     }
 
-    _module ??= await _jSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+    _module ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
     ModuleStatus = JsModuleStatus.Imported;
   }
 
@@ -128,10 +128,17 @@ public abstract class BaseJsModule : IAsyncDisposable
     _module = null;
     ModuleStatus = JsModuleStatus.Disposed;
 
-    foreach (var callbackInterop in _callbackInterops)
+    if (CallbackInterops is not null)
     {
-      callbackInterop.Dispose();
+      foreach (var callbackInterop in CallbackInterops)
+      {
+        callbackInterop.Dispose();
+      }
+      CallbackInterops.Clear();
     }
-    _callbackInterops.Clear();
+
+    // Set this to null so that we can release
+    // this reference for GC to collect
+    CallbackInterops = null!;
   }
 }
