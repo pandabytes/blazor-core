@@ -1,0 +1,111 @@
+using Blazor.Core.Enums;
+
+namespace Blazor.Core.Tests.Enums;
+
+public class Color : StringEnum
+{
+  protected Color(string value) : base(value) {}
+
+  public readonly static Color Blue = new("blue");
+
+  // public readonly static Color Purple = new("blue");
+
+  public readonly static Color Green = new("green");
+
+  public readonly static Color Red = new("red");
+}
+
+public class ComputerColor : StringEnum
+{
+  private ComputerColor(string value) : base(value) {}
+
+  public static readonly ComputerColor Red = new("red");
+}
+
+public class Operation : StringEnum
+{
+  protected Operation(string value) : base(value) {}
+
+  public readonly static Operation Read = new("read");
+
+  public readonly static Operation DuplicateRead = new("read");
+
+  public readonly static Operation Write = new("write");
+}
+
+public class StringEnumTests
+{
+  [InlineData("red")]
+  [InlineData("blue")]
+  [InlineData("green")]
+  [Theory]
+  public void Contains_ContainsValue_ReturnsTrue(string value)
+  {
+    Assert.True(StringEnum.Contains<Color>(value));
+  }
+
+  [Fact]
+  public void Contains_DoesNotContainValue_ReturnsFalse()
+  {
+    Assert.False(StringEnum.Contains<Color>(string.Empty));
+  }
+
+  [Fact]
+  public void Contains_DoesNotContainValueFromAnotherStringEnum_ReturnsFalse()
+  {
+    Assert.False(StringEnum.Contains<ComputerColor>("blue"));
+  }
+
+  [Fact]
+  public void Contains_DuplicateValues_ThrowsException()
+  {
+    Assert.Throws<InvalidOperationException>(() =>
+      StringEnum.Contains<Operation>("read")
+    );
+  }
+
+  [Fact]
+  public void Get_ValidValue_Success()
+  {
+    Assert.Equal(Color.Blue, StringEnum.Get<Color>("blue"));
+  }
+
+  [Fact]
+  public void Get_InvalidValue_ThrowsException()
+  {
+    Assert.Throws<ArgumentException>(() =>
+      StringEnum.Get<Color>(string.Empty)
+    );
+  }
+
+  [Fact]
+  public void Get_DuplicateValues_ThrowsException()
+  {
+    Assert.Throws<InvalidOperationException>(() =>
+      StringEnum.Contains<Operation>("write")
+    );
+  }
+
+  [Fact]
+  public void Equals_SameReference_ReturnsTrue()
+  {
+    var red = Color.Red;
+    Assert.True(Color.Red.Equals(red));
+  }
+
+  [Fact]
+  public void Equals_DifferentColor_ReturnsFalse()
+    => Assert.False(Color.Red.Equals(Color.Blue));
+
+  [Fact]
+  public void Equals_SameColorButDifferentEnum_ReturnsFalse()
+    => Assert.False(Color.Red.Equals(ComputerColor.Red));
+
+  [InlineData("")]
+  [InlineData(' ')]
+  [InlineData(100)]
+  [InlineData(null)]
+  [Theory]
+  public void Equals_DifferentObjectType_ReturnsFalse(object? obj)
+    => Assert.False(Color.Red.Equals(obj));
+}
