@@ -43,4 +43,14 @@ public class BaseScopeComponentWithJsModuleNotInject : BaseScopeComponent
   private readonly JsModule _jsModule = null!;
 }
 
+public class TestComponent : BaseScopeComponent
+{
+  [InjectScope]
+  private protected readonly ScopeServiceDispose _scopeService = null!;
+
+  public ScopeServiceDispose? ScopeService => _scopeService;
+}
+
+public class ChildTestComponent : TestComponent {}
+
 #pragma warning restore CS0414 // Remove unused private members

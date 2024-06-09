@@ -34,6 +34,24 @@ public class BaseScopeComponentTests : TestContext
   }
 
   [Fact]
+  public void BaseScopeComponent_InjectScopeServiceInChildClass_ScopeServiceIsInjected()
+  {
+    // Arrange
+    var scopeServiceDispose = new ScopeServiceDispose();
+    Services.AddScoped(_ => scopeServiceDispose);
+
+    // Act
+    var testComponent = RenderComponent<TestComponent>();
+    var childTestComponent = RenderComponent<ChildTestComponent>();
+
+    // Assert
+    Assert.NotNull(testComponent.Instance.ScopeService);
+    Assert.NotNull(childTestComponent.Instance.ScopeService);
+
+    DisposeComponents();
+  }
+
+  [Fact]
   public void BaseScopeComponent_UseAutoImport_JsModuleIsImported()
   {
     // Arrange
