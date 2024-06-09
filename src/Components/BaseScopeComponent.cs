@@ -16,14 +16,14 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   /// Specify a private field to be automatically injected a scoped service
   /// during <see cref="OnInitialized"/>.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
   protected sealed class InjectScopeAttribute : Attribute {}
 
   /// <summary>
   /// Specify a private field whose type derives from <see cref="BaseJsModule"/>
   /// and automatically import it during <see cref="OnAfterRenderAsync"/>.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
   protected sealed class AutoImportJsModuleAttribute : Attribute {}
 
   /// <inhereitdoc />
