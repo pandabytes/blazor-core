@@ -44,4 +44,45 @@ public class ActionCallbackInteropTests : BaseCallbackInteropTests
     AssertCallbackInterop(actionCallbackInterop, action);
   }
 
+  [Fact]
+  public void ActionWithThreeParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Action<string, int, float> action = (s, i, f) => {};
+
+    // Act
+    using ActionCallbackInterop<string, int, float> actionCallbackInterop = action;
+
+    // Assert
+    Assert.False(actionCallbackInterop.IsAsync);
+    AssertCallbackInterop(actionCallbackInterop, action);
+  }
+
+  [Fact]
+  public void ActionWithFourParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Action<string, int, float, object> action = (s, i, f, o) => {};
+
+    // Act
+    using ActionCallbackInterop<string, int, float, object> actionCallbackInterop = action;
+
+    // Assert
+    Assert.False(actionCallbackInterop.IsAsync);
+    AssertCallbackInterop(actionCallbackInterop, action);
+  }
+
+  [Fact]
+  public void ActionWithFiveParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Action<string, int, float, object, double> action = (s, i, f, o, d) => {};
+
+    // Act
+    using ActionCallbackInterop<string, int, float, object, double> actionCallbackInterop = action;
+
+    // Assert
+    Assert.False(actionCallbackInterop.IsAsync);
+    AssertCallbackInterop(actionCallbackInterop, action);
+  }
 }

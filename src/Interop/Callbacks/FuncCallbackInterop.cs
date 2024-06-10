@@ -112,3 +112,110 @@ public sealed class FuncCallbackInterop<T1, T2, TResult> : FuncCallbackInterop<T
   public static implicit operator FuncCallbackInterop<T1, T2, TResult>(Func<T1, T2, TResult> callback)
     => new(callback);
 }
+
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="T1">Type of the first parameter.</typeparam>
+/// <typeparam name="T2">Type of the second parameter.</typeparam>
+/// <typeparam name="T3">Type of the third parameter.</typeparam>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public sealed class FuncCallbackInterop<T1, T2, T3, TResult> : FuncCallbackInterop<TResult>
+{
+  private class JSInteropWrapper
+  {
+    private readonly Func<T1, T2, T3, TResult> _callback;
+
+    public JSInteropWrapper(Func<T1, T2, T3, TResult> callback) => _callback = callback;
+
+    [JSInvokable]
+    public TResult Invoke(T1 arg1, T2 arg2, T3 arg3) => _callback.Invoke(arg1, arg2, arg3);
+  }
+
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
+  public FuncCallbackInterop(Func<T1, T2, T3, TResult> callback)
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> callback)
+    => new(callback);
+}
+
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="T1">Type of the first parameter.</typeparam>
+/// <typeparam name="T2">Type of the second parameter.</typeparam>
+/// <typeparam name="T3">Type of the third parameter.</typeparam>
+/// <typeparam name="T4">Type of the fourth parameter.</typeparam>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public sealed class FuncCallbackInterop<T1, T2, T3, T4, TResult> : FuncCallbackInterop<TResult>
+{
+  private class JSInteropWrapper
+  {
+    private readonly Func<T1, T2, T3, T4, TResult> _callback;
+
+    public JSInteropWrapper(Func<T1, T2, T3, T4, TResult> callback) => _callback = callback;
+
+    [JSInvokable]
+    public TResult Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4) => _callback.Invoke(arg1, arg2, arg3, arg4);
+  }
+
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
+  public FuncCallbackInterop(Func<T1, T2, T3, T4, TResult> callback)
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> callback)
+    => new(callback);
+}
+
+/// <summary>
+/// This class represents a Func callback for JS interop.
+/// </summary>
+/// <typeparam name="T1">Type of the first parameter.</typeparam>
+/// <typeparam name="T2">Type of the second parameter.</typeparam>
+/// <typeparam name="T3">Type of the third parameter.</typeparam>
+/// <typeparam name="T4">Type of the fourth parameter.</typeparam>
+/// <typeparam name="T5">Type of the fifth parameter.</typeparam>
+/// <typeparam name="TResult">Return type of the Func callback.</typeparam>
+public sealed class FuncCallbackInterop<T1, T2, T3, T4, T5, TResult> : FuncCallbackInterop<TResult>
+{
+  private class JSInteropWrapper
+  {
+    private readonly Func<T1, T2, T3, T4, T5, TResult> _callback;
+
+    public JSInteropWrapper(Func<T1, T2, T3, T4, T5, TResult> callback) => _callback = callback;
+
+    [JSInvokable]
+    public TResult Invoke(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+      => _callback.Invoke(arg1, arg2, arg3, arg4, arg5);
+  }
+
+  /// <summary>
+  /// Construct with the given <paramref name="callback"/>.
+  /// </summary>
+  public FuncCallbackInterop(Func<T1, T2, T3, T4, T5, TResult> callback)
+    => DotNetRef = DotNetObjectReference.Create(new JSInteropWrapper(callback));
+
+  /// <summary>
+  /// Easy way to convert to a callback interop object.
+  /// Just make sure to dispose it afterwards.
+  /// </summary>
+  /// <param name="callback">Callback.</param>
+  public static implicit operator FuncCallbackInterop<T1, T2, T3, T4, T5, TResult>(Func<T1, T2, T3, T4, T5, TResult> callback)
+    => new(callback);
+}
+

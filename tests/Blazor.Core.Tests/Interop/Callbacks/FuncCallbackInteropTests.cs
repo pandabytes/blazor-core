@@ -45,6 +45,48 @@ public class FuncCallbackInteropTests : BaseCallbackInteropTests
   }
 
   [Fact]
+  public void FuncWithThreeParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Func<int, string, object, string> func = (i, s, o) => string.Empty;
+
+    // Act
+    using FuncCallbackInterop<int, string, object, string> funcCallbackInterop = func;
+
+    // Assert
+    Assert.False(funcCallbackInterop.IsAsync);
+    AssertCallbackInterop(funcCallbackInterop, func);
+  }
+
+  [Fact]
+  public void FuncWithFourParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Func<int, string, float, object, string> func = (i, s, f, o) => string.Empty;
+
+    // Act
+    using FuncCallbackInterop<int, string, float, object, string> funcCallbackInterop = func;
+
+    // Assert
+    Assert.False(funcCallbackInterop.IsAsync);
+    AssertCallbackInterop(funcCallbackInterop, func);
+  }
+
+  [Fact]
+  public void FuncWithFiveParams_CanBeInvokedInJs()
+  {
+    // Arrange
+    Func<int, string, float, object, double, string> func = (i, s, f, d, o) => string.Empty;
+
+    // Act
+    using FuncCallbackInterop<int, string, float, object, double, string> funcCallbackInterop = func;
+
+    // Assert
+    Assert.False(funcCallbackInterop.IsAsync);
+    AssertCallbackInterop(funcCallbackInterop, func);
+  }
+
+  [Fact]
   public void Func_ReturnsTask_IsAsyncSetToTrue()
   {
     // Arrange
