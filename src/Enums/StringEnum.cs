@@ -114,7 +114,7 @@ public abstract class StringEnum
       return (TStringEnum)StringEnumValuesMapping[type][value];
     }
 
-    throw new ArgumentException($"Value \"{value}\" not found.");
+    throw new ArgumentException($"Value \"{value}\" not found in string enum \"{type.FullName}\".");
   }
 
   /// <summary>
