@@ -185,3 +185,65 @@ add the module class to your DI container, and use the module like this:
   }
 }
 ```
+
+# String Enum
+This library also includes a class named `StringEnum`. Purpose of this class is to
+represent discrete values as string, like `enum` but uses `string`.
+
+To define your custom string enum, inherit `StringEnum` like the example below.
+```cs
+public sealed class Color : StringEnum
+{
+  // Make this private so that no one else can create Color object
+  private Color(string value) : base(value) {}
+
+  public readonly static Color Blue = new("blue");
+
+  public readonly static Color Green = new("green");
+
+  public readonly static Color Red = new("red");
+}
+
+// Usage
+Color blue = Color.Blue;
+string blueStr = blue; // Implicit cast to string - blueStr is now "blue"
+```
+
+Defining multiple enums with the same value is not allowed. Doing so will cause
+an exception during runtime.
+```cs
+public sealed class Color : StringEnum
+{
+  private Color(string value) : base(value) {}
+
+  public readonly static Color Blue = new("blue");
+
+  public readonly static Color Green = new("blue"); // ❌ Cannot have two "blue" in a string enum
+}
+```
+
+## Converters
+To make it easy to work with JSOn serialization, this library includes this converter
+`StringEnumConverter<T>`. This converter enables serializing a `StringEnum` to a literal string value.
+
+Note this is a converter for `System.Text.Json`.
+
+```cs
+using System.Text.Json.Serialization;
+
+[JsonConverter(typeof(StringEnumConverter<Color>))]
+public sealed class Color : StringEnum
+{
+  private Color(string value) : base(value) {}
+
+  public readonly static Color Blue = new("blue");
+
+  public readonly static Color Green = new("green");
+
+  public readonly static Color Red = new("red");
+}
+
+var json = JsonSerializer.Serialize(Color.Red);
+// With the converter, json is "\"red\""
+// Without the converter, json is "{\"Value\":\"red\"}"
+```
