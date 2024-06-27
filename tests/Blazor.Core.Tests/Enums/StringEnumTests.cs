@@ -2,39 +2,14 @@ using Blazor.Core.Enums;
 
 namespace Blazor.Core.Tests.Enums;
 
-public class Color : StringEnum
-{
-  protected Color(string value) : base(value) {}
-
-  public readonly static Color Blue = new("blue");
-
-  // public readonly static Color Purple = new("blue");
-
-  public readonly static Color Green = new("green");
-
-  public readonly static Color Red = new("red");
-}
-
-public class ComputerColor : StringEnum
-{
-  private ComputerColor(string value) : base(value) {}
-
-  public static readonly ComputerColor Red = new("red");
-}
-
-public class Operation : StringEnum
-{
-  protected Operation(string value) : base(value) {}
-
-  public readonly static Operation Read = new("read");
-
-  public readonly static Operation DuplicateRead = new("read");
-
-  public readonly static Operation Write = new("write");
-}
-
 public class StringEnumTests
 {
+  [Fact]
+  public void AccessStringEnum_HasDuplicateValues_ThrowsException()
+  {
+    Assert.Throws<TypeInitializationException>(() => Operation.Write);
+  }
+
   [InlineData("red")]
   [InlineData("blue")]
   [InlineData("green")]
@@ -53,7 +28,7 @@ public class StringEnumTests
   [Fact]
   public void Contains_DoesNotContainValueFromAnotherStringEnum_ReturnsFalse()
   {
-    Assert.False(StringEnum.Contains<ComputerColor>("blue"));
+    Assert.False(StringEnum.Contains<ComputerColor>(Color.Blue));
   }
 
   [Fact]
