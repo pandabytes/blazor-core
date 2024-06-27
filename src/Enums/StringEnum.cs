@@ -9,7 +9,7 @@ public abstract class StringEnum
 {
   /// <summary>
   /// Key is a type that inherits <see cref="StringEnum"/>.
-  /// Inner key is the string value and its value is the corresponding 
+  /// Inner key is the string value and inner value is the corresponding 
   /// <see cref="StringEnum"/> object.
   /// </summary>
   private static readonly IDictionary<Type, IDictionary<string, StringEnum>> StringEnumValuesMapping =
@@ -26,6 +26,19 @@ public abstract class StringEnum
   /// <param name="value">Enum value.</param>
   protected StringEnum(string value)
   {
+    var type = GetType();
+
+    if (!StringEnumValuesMapping.ContainsKey(type))
+    {
+      StringEnumValuesMapping.Add(type, new Dictionary<string, StringEnum>());
+    }
+
+    if (StringEnumValuesMapping[type].ContainsKey(value))
+    {
+      throw new ArgumentException($"String enum \"{type.FullName}\" has duplicate value \"{value}\".");
+    }
+  
+    StringEnumValuesMapping[type].Add(value, this);
     Value = value;
   }
 
@@ -59,6 +72,10 @@ public abstract class StringEnum
   /// Type that inherits <see cref="StringEnum"/>.
   /// </typeparam>
   /// <param name="value">String value to check for.</param>
+  /// <exception cref="InvalidOperationException">
+  /// Thrown when <typeparamref name="TStringEnum"/> is
+  /// unable to initialized all of its string enums.
+  /// </exception>
   /// <returns>
   /// True if <paramref name="value"/> is a string enum value
   /// of <typeparamref name="TStringEnum"/>. False otherwise.
@@ -66,7 +83,7 @@ public abstract class StringEnum
   public static bool Contains<TStringEnum>(string value) where TStringEnum : StringEnum
   {
     var type = typeof(TStringEnum);
-    CacheStringEnum(type);
+    InitializeAllStringEnums(type);
     return StringEnumValuesMapping[type].ContainsKey(value);
   }
 
@@ -83,9 +100,15 @@ public abstract class StringEnum
   /// Thrown when <paramref name="value"/> is not a string enum value
   /// of <typeparamref name="TStringEnum"/>.
   /// </exception>
+  /// <exception cref="InvalidOperationException">
+  /// Thrown when <typeparamref name="TStringEnum"/> is
+  /// unable to initialized all of its string enums.
+  /// </exception>
   public static TStringEnum Get<TStringEnum>(string value) where TStringEnum : StringEnum
   {
     var type = typeof(TStringEnum);
+    InitializeAllStringEnums(type);
+
     if (Contains<TStringEnum>(value))
     {
       return (TStringEnum)StringEnumValuesMapping[type][value];
@@ -118,34 +141,31 @@ public abstract class StringEnum
   public static bool operator !=(StringEnum stringEnum1, StringEnum stringEnum2)
     => !(stringEnum1.Value == stringEnum2.Value);
 
-  private static void CacheStringEnum(Type type)
+  /// <summary>
+  /// This will call the constructor of string enum
+  /// to initialize them all. This method can be called
+  /// multiple times without affecting anything. 
+  /// </summary>
+  private static void InitializeAllStringEnums(Type type)
   {
-    if (StringEnumValuesMapping.ContainsKey(type))
-    {
-      return;
-    }
-
+    var stringEnumType = typeof(StringEnum);
     try
     {
-      var stringEnumType = typeof(StringEnum);
-      var values = type
+      _ = type
         .GetFields(BindingFlags.Public | BindingFlags.Static)
         .Where(field => field.IsInitOnly)
         .Where(field => field.FieldType == type)
         .Where(field => stringEnumType.IsAssignableFrom(field.FieldType))
         .Select(field => (StringEnum)field.GetValue(null)!)
-        .ToDictionary(stringEnum => stringEnum.Value, stringEnum => stringEnum);
-
-      if (values.Any())
-      {
-        StringEnumValuesMapping.Add(type, values);
-      }
+        .ToArray();
     }
-    catch (ArgumentException)
+    catch (TargetInvocationException ex)
     {
-      throw new InvalidOperationException(
-        $"String enum \"{type.FullName}\" has duplicate string values."
-      );
+      // Throw the 2nd inner exception because this means
+      // we fail to initialize the enum string,
+      // and so we want to surface this exception
+      // directly to client
+      throw new InvalidOperationException("Failed to initilize all string enums.", ex.InnerException ?? ex);
     }
   }
 }
