@@ -66,8 +66,7 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
       {
         if (property.GetValue(this) is not BaseJsModule jsModule)
         {
-          var propertyName = $"{type.FullName}.{property.Name}";
-          throw new InvalidOperationException($"Property \"{propertyName}\" of type " +
+          throw new InvalidOperationException($"Property \"{property.Name}\" of type " +
                                               $"{type.Name} is null . Please set a value to this property first.");
         }
         await jsModule.ImportAsync();
