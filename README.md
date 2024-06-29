@@ -8,7 +8,7 @@ dotnet add package Blazor.Core --version <latest-version>
 # Components
 This library provides a base component class to easily inject scope services.
 Simply have your component inherit `BaseScopeComponent` class and mark your
-field(s) with `InjectScopeAttribute` attribute. Then during `BaseScopeComponent.OnInitialized`
+property with `InjectScopeAttribute` attribute. Then during `BaseScopeComponent.OnInitialized`
 the scoped serivces will automatically be injected to these fiel(s).
 ```razor
 @inherits BaseScopeComponent
@@ -17,7 +17,7 @@ the scoped serivces will automatically be injected to these fiel(s).
 {
   // This will be done automatically
   [InjectScope]
-  private readonly MyScopeService _myScopeService = null!;
+  private MyScopeService ScopeService { get; set; } = null!;
 
   // If you do override OnInitialized() always make sure
   // to call the base.Onitialized()
@@ -39,7 +39,7 @@ must be used with `InjectScope` attribute.
 {
   // Inject and import automatically
   [InjectScope, AutoImportJsModule]
-  private readonly MyScopeModule _myScopeModule = null!;
+  private MyScopeModule ScopeModule { get; set; } = null!;
 
   // If AutoImportJsModule is not provided,
   // you would have to do it explicitly like below

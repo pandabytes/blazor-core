@@ -13,14 +13,14 @@ namespace Blazor.Core.Components;
 public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
 {
   /// <summary>
-  /// Specify a private field to be automatically injected a scoped service
+  /// Specify a property to be automatically injected a scoped service
   /// during <see cref="OnInitialized"/>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   protected sealed class InjectScopeAttribute : Attribute {}
 
   /// <summary>
-  /// Specify a private field whose type derives from <see cref="BaseJsModule"/>
+  /// Specify a property whose type derives from <see cref="BaseJsModule"/>
   /// and automatically import it during <see cref="OnAfterRenderAsync"/>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
@@ -64,12 +64,11 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
 
       foreach (var property in autoImportFields)
       {
-        var jsModule = property.GetValue(this) as BaseJsModule;
-        if (jsModule is null)
+        if (property.GetValue(this) is not BaseJsModule jsModule)
         {
           var propertyName = $"{type.FullName}.{property.Name}";
-          throw new InvalidOperationException($"Field \"{propertyName}\" is null. " +
-                                               "Please inject a value to this field first.");
+          throw new InvalidOperationException($"Property \"{propertyName}\" of type " +
+                                              $"{type.Name} is null . Please set a value to this property first.");
         }
         await jsModule.ImportAsync();
       }
