@@ -16,14 +16,14 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   /// Specify a private field to be automatically injected a scoped service
   /// during <see cref="OnInitialized"/>.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   protected sealed class InjectScopeAttribute : Attribute {}
 
   /// <summary>
   /// Specify a private field whose type derives from <see cref="BaseJsModule"/>
   /// and automatically import it during <see cref="OnAfterRenderAsync"/>.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   protected sealed class AutoImportJsModuleAttribute : Attribute {}
 
   /// <inhereitdoc />
@@ -31,11 +31,19 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
   {
     base.OnInitialized();
 
-    foreach (var field in GetInjectScopeServiceFields())
+    foreach (var property in GetInjectScopeServiceProperties())
     {
       // Inject any scope service here
-      var scopeService = ScopedServices.GetRequiredService(field.FieldType);
-      field.SetValue(this, scopeService);
+      var scopeService = ScopedServices.GetRequiredService(property.PropertyType);
+      var hasSetter = property.GetSetMethod(nonPublic: true) is not null;
+
+      if (!hasSetter)
+      {
+        throw new InvalidOperationException(
+          $"Cannot provide a scoped value for property '{property.Name}' on type " +
+          $"'{property.DeclaringType!.FullName}' because the property has no setter.");
+      }
+      property.SetValue(this, scopeService);
     }
   }
 
@@ -50,18 +58,18 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
       // and their type must derive from BaseJsModule
       var type = GetType();
       var autoImportFields = type
-        .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-        .Where(field => field.GetCustomAttribute<AutoImportJsModuleAttribute>() is not null)
-        .Where(field => typeof(BaseJsModule).IsAssignableFrom(field.FieldType));
+        .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        .Where(property => property.GetCustomAttribute<AutoImportJsModuleAttribute>() is not null)
+        .Where(property => typeof(BaseJsModule).IsAssignableFrom(property.PropertyType));
 
-      foreach (var field in autoImportFields)
+      foreach (var property in autoImportFields)
       {
-        var jsModule = field.GetValue(this) as BaseJsModule;
+        var jsModule = property.GetValue(this) as BaseJsModule;
         if (jsModule is null)
         {
-          var fieldName = $"{type.FullName}.{field.Name}";
-          throw new InvalidOperationException($"Field \"{fieldName}\" is null. " +
-                                               "Please inject a value to this field.");
+          var propertyName = $"{type.FullName}.{property.Name}";
+          throw new InvalidOperationException($"Field \"{propertyName}\" is null. " +
+                                               "Please inject a value to this field first.");
         }
         await jsModule.ImportAsync();
       }
@@ -84,8 +92,8 @@ public abstract class BaseScopeComponent : OwningComponentBase, IAsyncDisposable
     // See https://github.com/dotnet/aspnetcore/issues/25873#issuecomment-884065550
     => await (ScopedServices as IAsyncDisposable)!.DisposeAsync();
 
-  private IEnumerable<FieldInfo> GetInjectScopeServiceFields()
+  private IEnumerable<PropertyInfo> GetInjectScopeServiceProperties()
     => GetType()
-         .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+         .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
          .Where(field => field.GetCustomAttribute<InjectScopeAttribute>() is not null);
 }

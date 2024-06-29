@@ -14,41 +14,38 @@ public class JsModule : BaseJsModule
 
 public class BaseScopeComponentUnderTest : BaseScopeComponent
 {
+  [InjectScope]
+  private ScopeServiceDispose ScopeServiceDispose { get; set; } = null!;
 
   [InjectScope]
-  private readonly ScopeServiceDispose _scopeServiceDispose = null!;
+  private ScopeServiceDisposeAsync ScopeServiceDisposeAsync { get; set; } = null!;
 
   [InjectScope]
-  private readonly ScopeServiceDisposeAsync _scopeServiceDisposeAsync = null!;
-
-  [InjectScope]
-  private readonly ScopeServiceDisposeAndDisposeAsync _scopeServiceDisposeAndDisposeAsync = null!;
+  public ScopeServiceDisposeAndDisposeAsync ScopeServiceDisposeAndDisposeAsync { get; set; } = null!;
 }
 
 public class BaseScopeComponentWithJsModule : BaseScopeComponent
 {
   [InjectScope]
-  private readonly JsModule _jsModule = null!;
+  private JsModule JsModule { get; set; } = null!;
 }
 
 public class BaseScopeComponentWithAutoImport : BaseScopeComponent
 {
   [InjectScope, AutoImportJsModule]
-  private readonly JsModule _jsModuleAutoImport = null!;
+  private JsModule JsModuleAutoImport { get; set; } = null!;
 }
 
 public class BaseScopeComponentWithJsModuleNotInject : BaseScopeComponent
 {
   [AutoImportJsModule]
-  private readonly JsModule _jsModule = null!;
+  private JsModule JsModule { get; } = null!;
 }
 
 public class TestComponent : BaseScopeComponent
 {
   [InjectScope]
-  private protected readonly ScopeServiceDispose _scopeService = null!;
-
-  public ScopeServiceDispose? ScopeService => _scopeService;
+  public ScopeServiceDispose ScopeService { get; set; } = null!;
 }
 
 public class ChildTestComponent : TestComponent {}
