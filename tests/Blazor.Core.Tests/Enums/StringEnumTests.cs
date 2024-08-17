@@ -83,4 +83,36 @@ public class StringEnumTests
   [Theory]
   public void Equals_DifferentObjectType_ReturnsFalse(object? obj)
     => Assert.False(Color.Red.Equals(obj));
+
+  [Fact]
+  public void GetAllStringEnums_TypeParam_ReturnsAllStringEnums()
+  {
+    var colorEnums = StringEnum.GetAllStringEnums<Color>();
+    Assert.Equal(3, colorEnums.Count());
+
+    foreach (var colorEnum in colorEnums)
+    {
+      Assert.NotNull(colorEnum);
+      Assert.NotEmpty(colorEnum.Value);
+    }
+  }
+
+  [Fact]
+  public void GetAllStringEnums_PassInValidType_ReturnsAllStringEnums()
+  {
+    var colorEnums = StringEnum.GetAllStringEnums(typeof(Color));
+    Assert.Equal(3, colorEnums.Count());
+
+    foreach (var colorEnum in colorEnums)
+    {
+      Assert.NotNull(colorEnum);
+      Assert.NotEmpty(colorEnum.Value);
+    }
+  }
+
+  [Fact]
+  public void GetAllStringEnums_InvalidType_ThrowsException()
+  {
+    Assert.Throws<ArgumentException>(() => StringEnum.GetAllStringEnums(typeof(StringEnumConverterTests)));
+  }
 }

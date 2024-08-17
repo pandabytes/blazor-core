@@ -118,6 +118,40 @@ public abstract class StringEnum
   }
 
   /// <summary>
+  /// Get all <see cref="StringEnum"/> objects belonging
+  /// to <typeparamref name="TStringEnum"/>.
+  /// </summary>
+  /// <typeparam name="TStringEnum">
+  /// String enum that we want to get values from.
+  /// </typeparam>
+  /// <returns><see cref="StringEnum"/> objects.</returns>
+  public static IEnumerable<StringEnum> GetAllStringEnums<TStringEnum>() where TStringEnum : StringEnum
+  {
+    var type = typeof(TStringEnum);
+    return GetAllStringEnums(type);
+  }
+
+  /// <summary>
+  /// Get all <see cref="StringEnum"/> objects belonging
+  /// to <paramref name="type"/>.
+  /// </summary>
+  /// <param name="type">String enum type.</param>
+  /// <returns><see cref="StringEnum"/> objects.</returns>
+  /// <exception cref="ArgumentException">
+  /// Thrown when <paramref name="type"/> does not inheri
+  /// <see cref="StringEnum"/>.
+  /// </exception>
+  public static IEnumerable<StringEnum> GetAllStringEnums(Type type)
+  {
+    if (!type.IsAssignableTo(typeof(StringEnum)))
+    {
+      throw new ArgumentException($"Type \"{type.FullName}\" does not inherit {nameof(StringEnum)}.");
+    }
+    InitializeAllStringEnums(type);
+    return StringEnumValuesMapping[type].Values;
+  }
+
+  /// <summary>
   /// Implicitly convert <paramref name="stringEnum"/> to string.
   /// </summary>
   /// <param name="stringEnum">String enum object.</param>
