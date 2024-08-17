@@ -15,10 +15,32 @@ public abstract class StringEnum
   private static readonly IDictionary<Type, IDictionary<string, StringEnum>> StringEnumValuesMapping =
     new Dictionary<Type, IDictionary<string, StringEnum>>();
 
+  private string _name;
+
   /// <summary>
   /// The enum value.
   /// </summary>
   public string Value { get; }
+
+  /// <summary>
+  /// Name of the string enum. For example, if the
+  /// string enum value is defined like this:
+  /// `public readonly static Color Red = new("red");`
+  /// Then <see cref="Name"/> is "Red" and <see cref="Value"/>
+  /// is "red".
+  /// </summary>
+  public string Name
+  {
+    get
+    {
+      if (string.IsNullOrWhiteSpace(_name))
+      {
+        InitializeAllStringEnums(GetType());
+      }
+      return _name;
+    }
+    private set => _name = value;
+  }
 
   /// <summary>
   /// Constructor.
@@ -40,6 +62,10 @@ public abstract class StringEnum
   
     StringEnumValuesMapping[type].Add(value, this);
     Value = value;
+
+    // Temporarily set to empty string.
+    // Actual value will be set later
+    _name = string.Empty;
   }
 
   /// <inheritdoc/>
@@ -185,13 +211,18 @@ public abstract class StringEnum
     var stringEnumType = typeof(StringEnum);
     try
     {
-      _ = type
-        .GetFields(BindingFlags.Public | BindingFlags.Static)
-        .Where(field => field.IsInitOnly)
-        .Where(field => field.FieldType == type)
-        .Where(field => stringEnumType.IsAssignableFrom(field.FieldType))
-        .Select(field => (StringEnum)field.GetValue(null)!)
+      var fields = GetStringEnumStaticFields(type);
+      var fieldWithStringEnumArray = fields
+        // This is where we call the instance constructor
+        .Select(field => (field, (StringEnum)field.GetValue(null)!))
         .ToArray();
+
+      // After we have initialized the string
+      // enum objects we then set their Name
+      foreach (var (field, stringEnum) in fieldWithStringEnumArray)
+      {
+        stringEnum.Name = field.Name;
+      }
     }
     catch (TargetInvocationException ex)
     {
@@ -201,5 +232,15 @@ public abstract class StringEnum
       // directly to client
       throw new InvalidOperationException("Failed to initilize all string enums.", ex.InnerException ?? ex);
     }
+  }
+
+  private static IEnumerable<FieldInfo> GetStringEnumStaticFields(Type type)
+  {
+    var stringEnumType = typeof(StringEnum);
+    return type
+      .GetFields(BindingFlags.Public | BindingFlags.Static)
+      .Where(field => field.IsInitOnly)
+      .Where(field => field.FieldType == type)
+      .Where(field => stringEnumType.IsAssignableFrom(field.FieldType));
   }
 }

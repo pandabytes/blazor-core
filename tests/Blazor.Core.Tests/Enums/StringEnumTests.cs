@@ -93,6 +93,7 @@ public class StringEnumTests
     foreach (var colorEnum in colorEnums)
     {
       Assert.NotNull(colorEnum);
+      Assert.NotEmpty(colorEnum.Name);
       Assert.NotEmpty(colorEnum.Value);
     }
   }
@@ -106,6 +107,7 @@ public class StringEnumTests
     foreach (var colorEnum in colorEnums)
     {
       Assert.NotNull(colorEnum);
+      Assert.NotEmpty(colorEnum.Name);
       Assert.NotEmpty(colorEnum.Value);
     }
   }
@@ -114,5 +116,21 @@ public class StringEnumTests
   public void GetAllStringEnums_InvalidType_ThrowsException()
   {
     Assert.Throws<ArgumentException>(() => StringEnum.GetAllStringEnums(typeof(StringEnumConverterTests)));
+  }
+
+  [Fact]
+  public void NameProperty_AccessViaStaticField_PropertyIsSetCorrectly()
+  {
+    Assert.Equal(nameof(Color.Blue), Color.Blue.Name);
+    Assert.Equal(nameof(ComputerColor.Red), ComputerColor.Red.Name);
+  }
+
+  [Fact]
+  public void NameProperty_AccessAfterCallingGet_PropertyIsSetCorrectly()
+  {
+    var blue = StringEnum.Get<Color>("blue");
+
+    Assert.Equal(nameof(Color.Blue), Color.Blue.Name);
+    Assert.Equal(nameof(Color.Blue), blue.Name);
   }
 }
