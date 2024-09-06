@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Text.Json;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazor.Core;
@@ -17,5 +20,33 @@ public static class DependencyInjection
     await using var dotNetCallbackModule = new DotNetCallbackJsModule(jsRuntime);
     await dotNetCallbackModule.ImportAsync();
     await dotNetCallbackModule.RegisterAttachReviverAsync();
+  }
+
+  /// <summary>
+  /// Configure the <see cref="IJSRuntime"/>'s <see cref="JsonSerializerOptions"/>
+  /// This will affect the Blazor application globally.
+  /// </summary>
+  public static WebAssemblyHost ConfigureIJSRuntimeJsonOptions(this WebAssemblyHost webHost, Action<JsonSerializerOptions> configureJsonOpts)
+  {
+    var jsRuntime = webHost.Services.GetRequiredService<IJSRuntime>();
+    var options = GetJsonSerializerOptions(jsRuntime);
+    configureJsonOpts(options);
+    return webHost;
+  }
+
+  /// <summary>
+  /// See https://github.com/dotnet/aspnetcore/issues/12685#issuecomment-603050776
+  /// </summary>
+  /// <param name="jsRuntime"></param>
+  /// <exception cref="ArgumentException"></exception>
+  private static JsonSerializerOptions GetJsonSerializerOptions(IJSRuntime jsRuntime)
+  {
+    var property = typeof(JSRuntime).GetProperty("JsonSerializerOptions", BindingFlags.NonPublic | BindingFlags.Instance);
+    if (property?.GetValue(jsRuntime, null) is not JsonSerializerOptions options)
+    {
+      throw new ArgumentException($"Unable to get {nameof(JsonSerializerOptions)} from {nameof(IJSRuntime)}.");
+    }
+
+    return options;
   }
 }
