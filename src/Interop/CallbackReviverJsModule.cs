@@ -5,11 +5,8 @@ namespace Blazor.Core.Interop;
 /// This class allows C# callback to be passed
 /// to JS and have JS calls C# callback.
 /// </summary>
-/// <remarks>
-/// Constructor.
-/// </remarks>
 /// <param name="jSRuntime">JS runtime.</param>
-public sealed class CallbackReviverJsModule(IJSRuntime jSRuntime) : BaseJsModule(jSRuntime)
+internal sealed class CallbackReviverJsModule(IJSRuntime jSRuntime) : BaseJsModule(jSRuntime)
 {
   private const string DotNetReviverHandlerObj = "CallbackReviverObj";
 

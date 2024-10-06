@@ -59,34 +59,7 @@ implement their own JS modules.
 More importantly this library provides a TypeScript module that
 serializes/deserialize C# callbacks (`Func`, `Action`, etc.) to JS.
 This allows C# code to pass let's say a `Func<>` to JS, and JS code
-can invoke the C# callback. To use this functionality you must
-have a reference to a `CallbackReviverJsModule` object and then
-call its `ImportAsync()` to import the `callback-reviver.js` module.
-Then call `RegisterReviverAsync()`.
-
-Your code in `Program.cs` may look like this.
-```cs
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
-
-builder.Services
-  .AddSingleton<CallbackReviverJsModule>()
-  .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-var webHost = builder.Build();
-
-// Only need to import and register once and can be disposed right away
-var callbackReviverModule = webHost.Services.GetRequiredService<CallbackReviverJsModule>();
-await callbackReviverModule.ImportAsync();
-await callbackReviverModule.RegisterReviverAsync();
-await callbackReviverModule.DisposeAsync();
-
-await webHost.RunAsync();
-```
-
-Alternatively you can just call the extension method `RegisterCallbackReviverAsync` to do
-what's described above, without adding `CallbackReviverJsModule` to the DI container.
+can invoke the C# callback. To use this functionality, call the extension method `RegisterCallbackReviverAsync`.
 ```cs
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

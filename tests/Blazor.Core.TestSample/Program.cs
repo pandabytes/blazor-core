@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazor.Core;
 using Blazor.Core.TestSample;
 using Blazor.Core.TestSample.Modules;
-using Blazor.Core.Interop;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
