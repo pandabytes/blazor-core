@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
@@ -25,14 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.11" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.6.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Node.js.redist" Version="17.2.0" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- This custom task sets the current process's env var -->
@@ -88,18 +84,16 @@
   </PropertyGroup>
 
   <Target Name="RemoveWwwRootBeforeBuild" BeforeTargets="BeforeBuild">
-    <RemoveDir Directories="$(MSBuildProjectDirectory)/wwwroot/"/>
+    <RemoveDir Directories="$(MSBuildProjectDirectory)/wwwroot/" />
   </Target>
 
   <Target Name="NpmInstall" BeforeTargets="BeforeBuild" Inputs="$(NpmRoot)/package.json" Outputs="$(NpmInstallStampFile)">
-    <Exec WorkingDirectory="$(NpmRoot)"
-          Command="npm install" />
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm install" />
     <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
   </Target>
 
   <Target Name="RunSnowpackBuild" AfterTargets="PostBuildEvent">
-    <Exec WorkingDirectory="$(NpmRoot)"
-          Command="npm run rollup-build" />
+    <Exec WorkingDirectory="$(NpmRoot)" Command="npm run rollup-build" />
   </Target>
 
 </Project>
