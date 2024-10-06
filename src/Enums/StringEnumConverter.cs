@@ -9,15 +9,21 @@ namespace Blazor.Core.Enums;
 /// Borrowed idea from https://watzek.dev/posts/2023/09/16/solving-the-dictionary-json-serialization-puzzle-in-.net/.
 /// </summary>
 /// <typeparam name="TEnum">String enum type.</typeparam>
-public class StringEnumConverter<TEnum> : JsonConverter<TEnum?> where TEnum : StringEnum
+public class StringEnumConverter<TEnum> : JsonConverter<TEnum> where TEnum : StringEnum
 {
   /// <inheritdoc />
-  public override TEnum? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+  public override bool HandleNull => false;
+
+  /// <inheritdoc />
+  public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
   {
     try
     {
-      var value = reader.GetString();
-      return (value is null) ? null : StringEnum.Get<TEnum>(value);
+      // Value will be guaranteed to be not null because
+      // we already specify this converter will not handle
+      // null via the property HandleNull
+      var value = reader.GetString()!;
+      return StringEnum.Get<TEnum>(value);
     }
     catch (ArgumentException ex)
     {
@@ -27,29 +33,18 @@ public class StringEnumConverter<TEnum> : JsonConverter<TEnum?> where TEnum : St
   }
 
   /// <inheritdoc />
-  public override void Write(Utf8JsonWriter writer, TEnum? value, JsonSerializerOptions options)
+  public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
   {
-    if (value is null)
-    {
-      writer.WriteNullValue();
-      return;
-    }
-
     writer.WriteStringValue(value.Value);
   }
 
   /// <inheritdoc />
-  public override void WriteAsPropertyName(Utf8JsonWriter writer, TEnum? value, JsonSerializerOptions options)
+  public override void WriteAsPropertyName(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
   {
-    if (value is null)
-    {
-      return;
-    }
-
     writer.WritePropertyName(value.Value);
   }
 
   /// <inheritdoc />
-  public override TEnum? ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+  public override TEnum ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     => Read(ref reader, typeToConvert, options);
 }
