@@ -157,7 +157,7 @@ public class PlaywrightFixture : IAsyncLifetime
   /// </summary>
   private static void InstallPlaywright()
   {
-    var exitCode = Microsoft.Playwright.Program.Main(new[] { "install-deps" });
+    var exitCode = Microsoft.Playwright.Program.Main(["install-deps"]);
 
     if (exitCode != 0)
     {
@@ -165,11 +165,11 @@ public class PlaywrightFixture : IAsyncLifetime
         $"Playwright exited with code {exitCode} on install-deps");
     }
 
-    exitCode = Microsoft.Playwright.Program.Main(new[] { "install" });
+    exitCode = Microsoft.Playwright.Program.Main(["install"]);
     if (exitCode != 0)
     {
       throw new Exception(
         $"Playwright exited with code {exitCode} on install");
     }
-  }  
+  }
 }
