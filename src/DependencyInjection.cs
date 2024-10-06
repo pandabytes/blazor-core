@@ -12,12 +12,13 @@ public static class DependencyInjection
 {
   /// <summary>
   /// Register the attach handler for serializing/deserializing
-  /// C# callback in Javascript. Make sure <see cref="CallbackReviverJsModule"/>
-  /// is already registered as a singleton in the DI container.
+  /// C# callback in Javascript.
   /// </summary>
-  public static async Task RegisterAttachReviverAsync(this IServiceProvider serviceProvider)
+  public static async Task RegisterCallbackReviverAsync(this WebAssemblyHost app)
   {
+    var serviceProvider = app.Services;
     var jsRuntime = serviceProvider.GetRequiredService<IJSRuntime>();
+
     await using var callbackReviverModule = new CallbackReviverJsModule(jsRuntime);
     await callbackReviverModule.ImportAsync();
     await callbackReviverModule.RegisterReviverAsync();

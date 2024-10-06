@@ -11,10 +11,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
   .AddSingleton<DateFormatJsModule>()
-  .AddSingleton<CallbackReviverJsModule>()
   .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var webHost = builder.Build();
 
-await webHost.Services.RegisterAttachReviverAsync();
+await webHost.RegisterCallbackReviverAsync();
 await webHost.RunAsync();

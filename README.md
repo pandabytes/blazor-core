@@ -79,26 +79,25 @@ var webHost = builder.Build();
 // Only need to import and register once and can be disposed right away
 var callbackReviverModule = webHost.Services.GetRequiredService<CallbackReviverJsModule>();
 await callbackReviverModule.ImportAsync();
-await callbackReviverModule.RegisterAttachReviverAsync();
+await callbackReviverModule.RegisterReviverAsync();
 await callbackReviverModule.DisposeAsync();
 
 await webHost.RunAsync();
 ```
 
-Alternatively you can just call the extension method `RegisterAttachReviverAsync` to do
-what's described above.
+Alternatively you can just call the extension method `RegisterCallbackReviverAsync` to do
+what's described above, without adding `CallbackReviverJsModule` to the DI container.
 ```cs
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
-  .AddSingleton<CallbackReviverJsModule>()
   .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var webHost = builder.Build();
 
-await webHost.Services.RegisterAttachReviverAsync();
+await webHost.RegisterCallbackReviverAsync();
 await webHost.RunAsync();
 ```
 
