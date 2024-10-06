@@ -12,7 +12,8 @@ public static class JsonConverterTestExtensions
   public static TResult? Read<TResult>(
     this JsonConverter<TResult> converter, 
     string token,
-    JsonSerializerOptions? options = null)
+    JsonSerializerOptions? options = null
+  )
   {
     options ??= JsonSerializerOptions.Default;
     var bytes = Encoding.UTF8.GetBytes(token);
@@ -26,7 +27,8 @@ public static class JsonConverterTestExtensions
   public static string Write<T>(
     this JsonConverter<T> converter, 
     T value,
-    JsonSerializerOptions? options = null)
+    JsonSerializerOptions? options = null
+  )
   {
     options ??= JsonSerializerOptions.Default;
     using var memoryStream = new MemoryStream();
@@ -40,7 +42,8 @@ public static class JsonConverterTestExtensions
   public static TResult? ReadAsPropertyName<TResult>(
     this JsonConverter<TResult> converter, 
     string token,
-    JsonSerializerOptions? options = null)
+    JsonSerializerOptions? options = null
+  )
   {
     options ??= JsonSerializerOptions.Default;
     var bytes = Encoding.UTF8.GetBytes(token);
@@ -55,7 +58,8 @@ public static class JsonConverterTestExtensions
     this JsonConverter<T> converter, 
     T key,
     string value,
-    JsonSerializerOptions? options = null)
+    JsonSerializerOptions? options = null
+  ) where T : notnull
   {
     options ??= JsonSerializerOptions.Default;
     using var memoryStream = new MemoryStream();
