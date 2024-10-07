@@ -8,6 +8,9 @@ public class IndexPageTests
 
   private readonly PlaywrightFixture _playwrightFixture = null!;
 
+  // Comment this constructor so that we don't request the playwright
+  // fixture in which it will start the playwright installation
+  //
   // public IndexPageTests(PlaywrightFixture playwrightFixture)
   // {
   //   _playwrightFixture = playwrightFixture;

@@ -29,20 +29,24 @@ function isCallbackInterop(obj: any): obj is CallbackInterop {
     'isCallbackInterop',
     'assemblyName',
     'dotNetRef'
-  ]
+  ];
 
   const haveAllProps = mustHaveProps.every(propName => obj.hasOwnProperty(propName));
   return haveAllProps && obj['assemblyName'] === 'Blazor.Interop';
 }
 
-class DotNetReviverHandler {
+class CallbackReviver {
+  /**
+   * We only want to register this reviver only once
+   * for the whole lifetime of the app.
+   */
   private registered: boolean;
 
   constructor() {
     this.registered = false;
   }
 
-  public registerAttachReviver() {
+  public registerReviver() {
     if (this.registered) {
       return;
     }
@@ -66,7 +70,7 @@ class DotNetReviverHandler {
      * JsRuntimeObjectRef properties).
      * 
      */
-    DotNet.attachReviver((key, value) => {
+    DotNet.attachReviver((_, value) => {
       if (isCallbackInterop(value)) {
         const dotNetRef = value.dotNetRef;
 
@@ -79,7 +83,7 @@ class DotNetReviverHandler {
 
         return function() {
           return dotNetRef.invokeMethod('Invoke', ...arguments);
-        }
+        };
       }
 
       return value;
@@ -89,4 +93,4 @@ class DotNetReviverHandler {
   }
 }
 
-export const DotNetReviverHandlerObj = new DotNetReviverHandler();
+export const CallbackReviverObj = new CallbackReviver();

@@ -59,46 +59,18 @@ implement their own JS modules.
 More importantly this library provides a TypeScript module that
 serializes/deserialize C# callbacks (`Func`, `Action`, etc.) to JS.
 This allows C# code to pass let's say a `Func<>` to JS, and JS code
-can invoke the C# callback. To use this functionality you must
-have a reference to a `DotNetCallbackJsModule` object and then
-call its `ImportAsync()` to import the `dotnet-callback.js` module.
-Then call `RegisterAttachReviverAsync()`.
-
-Your code in `Program.cs` may look like this.
+can invoke the C# callback. To use this functionality, call the extension method `RegisterCallbackReviverAsync`.
 ```cs
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
-  .AddSingleton<DotNetCallbackJsModule>()
   .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var webHost = builder.Build();
 
-// Only need to import and register once and can be disposed right away
-var dotnetCallbackModule = webHost.Services.GetRequiredService<DotNetCallbackJsModule>();
-await dotnetCallbackModule.ImportAsync();
-await dotnetCallbackModule.RegisterAttachReviverAsync();
-await dotnetCallbackModule.DisposeAsync();
-
-await webHost.RunAsync();
-```
-
-Alternatively you can just call the extension method `RegisterAttachReviverAsync` to do
-what's described above.
-```cs
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
-
-builder.Services
-  .AddSingleton<DotNetCallbackJsModule>()
-  .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-var webHost = builder.Build();
-
-await webHost.Services.RegisterAttachReviverAsync();
+await webHost.RegisterCallbackReviverAsync();
 await webHost.RunAsync();
 ```
 

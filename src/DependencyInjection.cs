@@ -11,15 +11,17 @@ namespace Blazor.Core;
 public static class DependencyInjection
 {
   /// <summary>
-  /// Register the attach handler for serializing/deserializing
-  /// C# callback in Javascript.
+  /// Register a JSON reviver for serializing/deserializing
+  /// C# callback to Javascript.
   /// </summary>
-  public static async Task RegisterAttachReviverAsync(this IServiceProvider serviceProvider)
+  public static async Task RegisterCallbackReviverAsync(this WebAssemblyHost app)
   {
+    var serviceProvider = app.Services;
     var jsRuntime = serviceProvider.GetRequiredService<IJSRuntime>();
-    await using var dotNetCallbackModule = new DotNetCallbackJsModule(jsRuntime);
-    await dotNetCallbackModule.ImportAsync();
-    await dotNetCallbackModule.RegisterAttachReviverAsync();
+
+    await using var callbackReviverModule = new CallbackReviverJsModule(jsRuntime);
+    await callbackReviverModule.ImportAsync();
+    await callbackReviverModule.RegisterReviverAsync();
   }
 
   /// <summary>
