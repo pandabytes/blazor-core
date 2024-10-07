@@ -151,11 +151,8 @@ public abstract class StringEnum
   /// String enum that we want to get values from.
   /// </typeparam>
   /// <returns><see cref="StringEnum"/> objects.</returns>
-  public static IEnumerable<StringEnum> GetAllStringEnums<TStringEnum>() where TStringEnum : StringEnum
-  {
-    var type = typeof(TStringEnum);
-    return GetAllStringEnums(type);
-  }
+  public static IEnumerable<TStringEnum> GetAllStringEnums<TStringEnum>() where TStringEnum : StringEnum
+    => GetAllStringEnums(typeof(TStringEnum)).OfType<TStringEnum>();
 
   /// <summary>
   /// Get all <see cref="StringEnum"/> objects belonging
