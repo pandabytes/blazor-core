@@ -87,9 +87,11 @@ public class StringEnumTests
   [Fact]
   public void GetAllStringEnums_TypeParam_ReturnsAllStringEnums()
   {
+    // Act
     var colorEnums = StringEnum.GetAllStringEnums<Color>();
-    Assert.Equal(3, colorEnums.Count());
 
+    // Assert
+    Assert.Equal(3, colorEnums.Count());
     foreach (var colorEnum in colorEnums)
     {
       Assert.NotNull(colorEnum);
