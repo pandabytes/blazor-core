@@ -29,7 +29,7 @@ function isCallbackInterop(obj: any): obj is CallbackInterop {
     'isCallbackInterop',
     'assemblyName',
     'dotNetRef'
-  ]
+  ];
 
   const haveAllProps = mustHaveProps.every(propName => obj.hasOwnProperty(propName));
   return haveAllProps && obj['assemblyName'] === 'Blazor.Interop';
@@ -78,12 +78,12 @@ class CallbackReviver {
           // This callback will return a Promise
           return function() {
             return dotNetRef.invokeMethodAsync('Invoke', ...arguments);
-          }
+          };
         }
 
         return function() {
           return dotNetRef.invokeMethod('Invoke', ...arguments);
-        }
+        };
       }
 
       return value;
